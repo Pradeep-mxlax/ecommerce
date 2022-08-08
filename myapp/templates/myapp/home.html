@@ -1,0 +1,8 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block body %}
+<h1>this home page</h1>
+{% if request.user.is_authenticated %}
+<a href="{% url 'loguot' %}">logout</a>
+{% endif %}
+{% endblock body %}
