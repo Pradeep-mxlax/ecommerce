@@ -3,21 +3,19 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import User
 # Create your models here.
 
-# class User(models.Model):
-#     GENDER = [    
-#         ('M','Male'),
-#         ('F','Female'),
-#     ]
-#     name = models.CharField(max_length=255)
-#     email = models.EmailField(max_length=100)
-    
-#     password = models.CharFiePld(max_length=20)
-#     gender = models.CharField(max_length=2,choices=GENDER)
-#     is_active = models.BooleanField(default=False)
-#     date_join = models.DateTimeField(auto_now=True) 
-    
-#     def __str__(self):
-        # return self.name
+class User_More_Detail(models.Model):
+    GENDER = [    
+        ('M','Male'),
+        ('F','Female'),
+    ]
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='normal_user')
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='images/',default='')
+    gender = models.CharField(max_length=2,choices=GENDER)
+    date_of_birth = models.DateField()
+    def __str__(self):
+        return self.first_name + ' ' + self.last_name
 
 
 class Address(models.Model):
@@ -27,15 +25,19 @@ class Address(models.Model):
         ('MP','Madhya Pradesh'),
         ('GU','Gujrat')
     ]
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    COUNTRY = [
+        ('END','England'),
+        ('IND','India')
+    ]
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='address_user')
     name = models.CharField(max_length=255)
-    city = models.CharField(max_length=255)
     phone_number = PhoneNumberField()
-    address1 = models.TextField(help_text='Enter Local address')
-    address2 = models.TextField(help_text='Enter Permanent address',null=True,blank=True)
-    address3 = models.TextField(help_text='Enter office address',null=True,blank=True)
+    address1 = models.TextField()
+    # address2 = models.TextField(help_text='Enter Permanent address',null=True,blank=True)
     pin_code = models.PositiveIntegerField()
+    city = models.CharField(max_length=255)
     state = models.CharField(max_length=5,choices=STATE)
+    country = models.CharField(max_length=10,choices=COUNTRY)
     latitude = models.DecimalField(max_digits=9,decimal_places=6,null=True,blank=True)
     longitute = models.DecimalField(max_digits=9,decimal_places=6,null=True,blank=True)
     create_date = models.DateTimeField(auto_now_add=True)
@@ -58,7 +60,7 @@ class Category(models.Model):
 class SubCategory(models.Model):
     """ Product Subcategty model  """
 
-    category = models.ManyToManyField(Category)
+    category = models.ManyToManyField(Category,related_name='sub_cat')
     sub_cat_name = models.CharField(max_length=255)
     description = models.TextField()
     create_date = models.DateTimeField(auto_now_add=True)
@@ -70,12 +72,12 @@ class SubCategory(models.Model):
 class Product(models.Model):
     """  Product model """
 
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    sub_category = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name='prd_cat')
+    sub_category = models.ForeignKey(SubCategory, on_delete=models.CASCADE,related_name='prd_subcat')
     name = models.CharField(max_length=255)
     description = models.TextField()
     price = models.PositiveIntegerField()
-    product_sku = models.CharField(max_length=100)
+    product_sku = models.CharField(max_length=100,unique=True)
     brand = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
     # total_stock_unit = models.PositiveIntegerField()
@@ -84,25 +86,24 @@ class Product(models.Model):
     update_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.product_name
+        return self.name
 
 
 class Media(models.Model):
     """ store all media files of product  """
     
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='media_prd')
     image = models.ImageField(upload_to='images/')
     description = models.TextField()
     
 
-# class ProductDetails(models.Model):
-#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+#snKey(Product, on_delete=models.CASCADE)
 
 
 class Cart(models.Model):
     """product cart models """
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,related_name='cart_user')
     quantity = models.IntegerField(default=0)
     total_price = models.PositiveIntegerField(default=0)
     def __str__(self):
@@ -112,8 +113,8 @@ class Cart(models.Model):
 class CartItem(models.Model):
     """ add  product into cart item """
 
-    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='prd_cartitem')
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE,related_name='cart_cartitem')
     quantity = models.IntegerField(default=0)
     total_price = models.PositiveIntegerField(default=0)
     payed = models.BooleanField(default=False) 
@@ -122,8 +123,8 @@ class CartItem(models.Model):
     # @property
     # def total_price(self):
     #     return self.quantity + self.product_id.price
-    def __str__(self):
-        return self.id
+    # def __str__(self):
+    #     return self.srt
 
 
 class Order(models.Model):
@@ -135,15 +136,15 @@ class Order(models.Model):
         ('P','Pending'),
         ('F','Failed')
     ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)    
-    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='admin_user')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='prd_order')    
+    address = models.ForeignKey(Address, on_delete=models.CASCADE,related_name='order_address')
     order_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=2,choices=ORDER_STATUS)
 
-    def __str__(self):
-        return self.id
+    # def __str__(self):
+    #     return self.id
 
 
 # class OrderDetails(models.Model):
