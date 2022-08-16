@@ -7,12 +7,13 @@ class User_More_Detail(models.Model):
     GENDER = [    
         ('M','Male'),
         ('F','Female'),
+        ('O','Other'),
     ]
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='normal_user')
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='images/',default='')
-    gender = models.CharField(max_length=2,choices=GENDER)
+    gender = models.CharField(max_length=10,choices=GENDER)
     date_of_birth = models.DateField()
     def __str__(self):
         return self.first_name + ' ' + self.last_name
@@ -106,8 +107,7 @@ class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name='cart_user')
     quantity = models.IntegerField(default=0)
     total_price = models.PositiveIntegerField(default=0)
-    def __str__(self):
-        return self.str(id)
+
 
 
 class CartItem(models.Model):
@@ -123,8 +123,6 @@ class CartItem(models.Model):
     # @property
     # def total_price(self):
     #     return self.quantity + self.product_id.price
-    # def __str__(self):
-    #     return self.srt
 
 
 class Order(models.Model):

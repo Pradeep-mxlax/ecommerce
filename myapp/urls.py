@@ -11,7 +11,10 @@ urlpatterns = [
     path('profile/',views.ProfileView.as_view(),name='profile'),
     path('cart/',views.CartView.as_view(),name='cart'),
     path('checkout/',views.CheckoutView.as_view(),name='checkout'),
-    path('detail/',views.DetailView.as_view(),name='detail'),
-    path('shop/',views.ShopView.as_view(),name='shop'),
+    path('detail/<int:pid>',views.DetailView.as_view(),name='detail'),
+    path('shop/<int:sid>',views.ShopView.as_view(),name='shop'),
+    path('contact/',views.ContactView.as_view(),name='contact'),
+    path('cartitem/',views.CartItemView.as_view(),name='cartitem'),
+    path('cartitemdelete/<int:id>',views.CartItemDeleteView.as_view(),name='cartitemdelete'),
 
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
