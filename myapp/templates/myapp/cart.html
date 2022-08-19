@@ -103,7 +103,7 @@
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
             <h1 class="font-weight-semi-bold text-uppercase mb-3">Shopping Cart</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
+                <p class="m-0"><a href="/">Home</a></p>
                 <p class="m-0 px-2">-</p>
                 <p class="m-0">Shopping Cart</p>
             </div>
@@ -148,46 +148,57 @@
                                                 <div class="card-body">
                                                     <div class="d-flex justify-content-between">
                                                         <div class="d-flex flex-row align-items-center">
-                                                            <div>
-                                                               
+                                                         
+
                                                                 <img src="../../../media/{{i.product_id.media_prd.first.image}}"
                                                                     class="img-fluid rounded-3" alt="Shopping item"
-                                                                    style="width:100px;">
-                                                            
-                                                            </div>
+                                                                    >
 
-                                                            <div class="ms-3 ml-2">
+                                                            <div class="ms-4 ml-4">
                                                                 <h6>{{i.product_id.title}}</h6>
-                                                                <p class="small mb-0">256GB, Navy Blue</p>
-                                                                <h5 class="mb-0">₹{{i.product_id.price}}</h5>
-                                                                
-                                                                <!-- add quantity div -->
-                                                            <div class="input-group quantity mx-auto" style="width: 100px;">
-                                                            <div class="input-group-btn">
-                                                                <button class="btn btn-sm btn-light btn-minus">
-                                                                    <i class="fa fa-minus"></i>
-                                                                </button>
-                                                            </div>
-                                                            <input type="text"
-                                                            class="form-control form-control-sm bg-secondary text-center"
-                                                            value="1">
-                                                            <div class="input-group-btn">
-                                                                <button class="btn btn-sm btn-light btn-plus">
-                                                                    <i class="fa fa-plus"></i>
-                                                                </button>
+                                                                <!-- <p class="small mb-0">256GB, Navy Blue</p> -->
+                                                                <!-- use javascipt -->
+                                                                <h5 class="mb-0">₹{{i.total_price}}</h5>
+                                                                <input type="hidden" class="mb-0"
+                                                                    value="{{i.product_id.price}}"
+                                                                    id="hid{{i.product_id.id}}">
+                                                                <div class="input-group quanxsftity mx-auto "
+                                                                    style="width: 100px;">
+                                                                    <form action="/cart/" method="post" class="d-flex flex-row align-items-center">
+                                                                        {% csrf_token %}
+                                                                        <div class="input-group-btn">
+                                                                            <button value="minus" name="type"
+                                                                                class="btn btn-sm btn-light btn-minus">
+                                                                                <i class="fa fa-minus"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                        <input type="hidden" name="product"
+                                                                            class="form-control form-control-sm bg-secondary text-center"
+                                                                            value={{i.product_id.id}}>
+                                                                        <input type="text" name="quantity"
+                                                                            class="form-control form-control-sm bg-secondary text-center"
+                                                                            value="{{i.quantity}}" readonly>
+                                                                        <div class="input-group-btn">
+                                                                            <button value="plus" name="type"
+                                                                                class="btn btn-sm btn-light btn-plus">
+                                                                                <i class="fa fa-plus"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                                <!-- end javascript -->
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    </div>
                                                         <!-- end -->
                                                         <div class="d-flex flex-row align-items-center">
-                                                            <div style="width: 50px;">
+                                                            <!-- <div style="width: 50px;">
                                                                 <h5 class="fw-normal mb-0">2</h5>
-                                                            </div>
+                                                            </div> -->
                                                             <!-- <div style="width: 150px;">
                                                                 <h5 class="mb-0">₹{{i.product_id.price}}</h5>
                                                             </div> -->
-                                                            <a href="{% url 'cartitemdelete'  i.id %}" style="color: #cecece;"><i
+                                                            <a href="{% url 'cartitemdelete'  i.id %}"
+                                                                style="color: #cecece;"><i
                                                                     class="fas fa-trash-alt"></i></a>
                                                         </div>
 
@@ -221,19 +232,20 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3 pt-1">
                             <h6 class="font-weight-medium">Price ({{cartitem|length}} item)</h6>
-                            <h6 class="font-weight-medium">₹150</h6>
+                            <h6 class="font-weight-medium">₹{{cart.total_price}}</h6>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">₹10</h6>
+                            <!-- <h6 class="font-weight-medium">₹10</h6> -->
                         </div>
                     </div>
                     <div class="card-footer border-secondary bg-transparent">
                         <div class="d-flex justify-content-between mt-2">
                             <h5 class="font-weight-bold">Total</h5>
-                            <h5 class="font-weight-bold">₹160</h5>
+                            <h5 class="font-weight-bold">₹{{cart.total_price}}</h5>
                         </div>
-                        <button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
+                        
+                        <a href="{% url 'checkout' %}" class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</a>
                     </div>
                 </div>
             </div>
@@ -261,7 +273,7 @@
                     <div class="col-md-4 mb-5">
                         <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
                         <div class="d-flex flex-column justify-content-start">
-                            <a class="text-dark mb-2" href="index.html"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                            <a class="text-dark mb-2" href="/"><i class="fa fa-angle-right mr-2"></i>Home</a>
                             <a class="text-dark mb-2" href="shop.html"><i class="fa fa-angle-right mr-2"></i>Our
                                 Shop</a>
                             <a class="text-dark mb-2" href="detail.html"><i class="fa fa-angle-right mr-2"></i>Shop
@@ -343,6 +355,20 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'website/js/main.js' %}"></script>
+    <script>
+        // function plus(product_id) {
+        //     let product_price = document.getElementById(`prd${product_id}`).innerText;
+        //     let hidden_price = document.getElementById(`hid${product_id}`).value;
+        //     // quantity = document.getElementById(`qut${product_id}`).value;
+        //     console.log(product_price,hidden_price,Number(product_price) + Number(hidden_price))
+        //     let price = Number(product_price) + Number(hidden_price)
+        //     document.getElementById(`prd${product_id}`).innerText =  price
+        // }
+        // function plus(product_id) {
+        //     quantity = document.getElementById(`qut${product_id}`).value;
+        //     console.log(quantity)
+        // }
+    </script>
 </body>
 
 </html>

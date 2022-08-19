@@ -22,14 +22,14 @@ class User_More_Detail(models.Model):
 class Address(models.Model):
     """User address which one store user addres"""
 
-    STATE = [
-        ('MP','Madhya Pradesh'),
-        ('GU','Gujrat')
-    ]
-    COUNTRY = [
-        ('END','England'),
-        ('IND','India')
-    ]
+    # STATE = [
+    #     ('MP','Madhya Pradesh'),
+    #     ('GU','Gujrat')
+    # ]
+    # COUNTRY = [
+    #     ('END','England'),sss
+    #     ('IND','India')
+    # ]
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='address_user')
     name = models.CharField(max_length=255)
     phone_number = PhoneNumberField()
@@ -37,8 +37,8 @@ class Address(models.Model):
     # address2 = models.TextField(help_text='Enter Permanent address',null=True,blank=True)
     pin_code = models.PositiveIntegerField()
     city = models.CharField(max_length=255)
-    state = models.CharField(max_length=5,choices=STATE)
-    country = models.CharField(max_length=10,choices=COUNTRY)
+    state = models.CharField(max_length=5,default='')
+    country = models.CharField(max_length=10,default='')
     latitude = models.DecimalField(max_digits=9,decimal_places=6,null=True,blank=True)
     longitute = models.DecimalField(max_digits=9,decimal_places=6,null=True,blank=True)
     create_date = models.DateTimeField(auto_now_add=True)
@@ -115,7 +115,7 @@ class CartItem(models.Model):
 
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='prd_cartitem')
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE,related_name='cart_cartitem')
-    quantity = models.IntegerField(default=0)
+    quantity = models.IntegerField(default=1)
     total_price = models.PositiveIntegerField(default=0)
     payed = models.BooleanField(default=False) 
     add_date = models.DateTimeField(auto_now_add=True)
