@@ -108,6 +108,9 @@ class Cart(models.Model):
     quantity = models.IntegerField(default=0)
     total_price = models.PositiveIntegerField(default=0)
 
+    def __str__(self):
+        return self.user.username
+    
 
 
 class CartItem(models.Model):
@@ -120,9 +123,9 @@ class CartItem(models.Model):
     payed = models.BooleanField(default=False) 
     add_date = models.DateTimeField(auto_now_add=True)
 
-    # @property
-    # def total_price(self):
-    #     return self.quantity + self.product_id.price
+    @property
+    def new_total_price(self):
+        return self.quantity * self.product_id.price
 
 
 class Order(models.Model):

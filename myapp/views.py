@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponse,redirect
+from django.shortcuts import render,HttpResponse,redirect,reverse
 from django.views.generic import *
 from django.views import View
 from .forms import *
@@ -70,6 +70,7 @@ class loguotView(View):
         logout(request)
         return redirect('/')
 
+
 class ProfileView(View):
     """ user profile class """
     def get(self,request):
@@ -115,13 +116,13 @@ class CartView(View):
         product_price = Product.objects.get(id=product_id)
         if button_type == 'plus':
             cartitem.quantity+=1
-            cartitem.total_price = cartitem.quantity * product_price.price
+            cartitem.total_price = cartitem.new_total_price
             cartitem.save()
 
         elif button_type == 'minus':
             if cartitem.quantity > 1:
                 cartitem.quantity-=1
-                cartitem.total_price = cartitem.quantity * product_price.price
+                cartitem.total_price =  cartitem.new_total_price
                 cartitem.save()  
  
         return redirect('cart')
@@ -130,7 +131,6 @@ class CartView(View):
 class CartItemView(View):
 
     def get(self,request,*args, **kwargs):
-        
         return redirect('cart')
 
     def post(self,request,*args, **kwargs):
@@ -138,25 +138,22 @@ class CartItemView(View):
             prduct_id = request.POST.get('prduct_id')
             product = Product.objects.get(id=prduct_id)
             carts = Cart.objects.get(user=request.user)
-
-
             available_product =carts.cart_cartitem.filter(product_id=prduct_id)
             if not available_product :
                 CartItem.objects.create(product_id=product,cart=carts,total_price=product.price)
 
                 return redirect('cart')
             else:
-                return redirect('cart')
-            
+                return redirect('cart') 
         else:
             return redirect('login')
      
 
 class CartItemDeleteView(View):
+
     def get(self,request,*args, **kwargs):
         cartitem = CartItem.objects.get(id=kwargs['id'])
         carts = Cart.objects.get(user=request.user)
-        # import pdb;pdb.set_trace()
         total = carts.total_price
         product_price = cartitem.total_price
         new_price = total - product_price
@@ -167,11 +164,10 @@ class CartItemDeleteView(View):
         return redirect('cart')
 
 
-
 class DetailView(View):
     """ user product detail class """
-    def get(self,request,*args,**kwargs):
 
+    def get(self,request,*args,**kwargs):
         categories = Category.objects.all()
         product_data = Product.objects.get(id=kwargs['pid'])
         context = {
@@ -180,8 +176,10 @@ class DetailView(View):
         }
         return render(request, "myapp/detail.html",context)
 
+
 class ShopView(View):
     """ user product shop class """   
+
     def get(self,request,*args,**kwargs):
 
         categories = Category.objects.all()
@@ -193,21 +191,70 @@ class ShopView(View):
         }
         return render(request, "myapp/shop.html",context)
 
+
 class CheckoutView(View):
     """ user product checkout class """
-    def get(self,request,*args,**kwargs):
-        return render(request, "myapp/checkout.html")
-    def post(self,request,*args,**kwargs):
-        if request.user.is_authenticated:
-            product = request.GET.get('pr_id')
-            if product:
-                product = Product.objects.get(id=product)
-                return render(request, "myapp/checkout.html",{'prd':product})
-            return HttpResponse('hello')
 
+    def get(self,request,*args,**kwargs):
+        if request.user.is_authenticated:
+            product_id = request.GET.get('pid')
+            if product_id:
+                product = Product.objects.get(id=product_id)
+                return render(request, "myapp/checkout.html",{'prd':product})
+            else:
+                cart = Cart.objects.get(user=request.user)
+                cartitem = cart.cart_cartitem.all()
+                return render(request, "myapp/checkout.html",{'cart':cart,'cartitem':cartitem})
         else:
             return redirect('login')
+        return render(request, "myapp/checkout.html")
+
+    def post(self,request,*args,**kwargs):
+        if request.user.is_authenticated:
+            product_id = request.GET.get('pr_id')
+            if product_id:
+                product_data = Product.objects.get(id=product_id)
+                return render(request, "myapp/checkout.html",{'prd':product_data})
+            else:
+                cart = Cart.objects.get(user=request.user)
+                cartitem = cart.cart_cartitem.all()
+                return render(request, "myapp/checkout.html",{'cart':cart,'cartitem':cartitem})
+        else:
+            return redirect('login')
+
+
 class ContactView(TemplateView):
     """ user product checkout class """
 
     template_name = "myapp/contact.html"
+
+
+class AddressView(View):
+    """ user product checkout class """
+
+    def post(self,request,*args, **kwargs):
+        pid = request.GET['pr_id']
+        name = request.POST['name']
+        number = request.POST['number']
+        address = request.POST['address']
+        pincode = request.POST['pincode']
+        city = request.POST['city']
+        state = request.POST['state']
+        country = request.POST['country']
+
+        Address.objects.create(user=request.user,name=name,phone_number=number,address1=address,pin_code=pincode,city=city,state=state,country=country)
+        return redirect(f'/checkout/?pid={pid}')
+
+class SearchView(View):
+    def get(self,request,*args, **kwargs):
+        categories = Category.objects.all()
+        context = {
+                'categories' : categories,
+        }
+        return render(request, "myapp/search.html",context)
+
+    def post(self,request,*args, **kwargs):
+        data = request.POST['search']
+        product_data = Product.objects.filter(title__icontains=data)
+        print(product_data)
+        return render(request, "myapp/search.html",{'product_data':product_data})

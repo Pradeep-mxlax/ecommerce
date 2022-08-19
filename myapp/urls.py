@@ -16,5 +16,7 @@ urlpatterns = [
     path('contact/',views.ContactView.as_view(),name='contact'),
     path('cartitem/',views.CartItemView.as_view(),name='cartitem'),
     path('cartitemdelete/<int:id>',views.CartItemDeleteView.as_view(),name='cartitemdelete'),
+    path('addreess/',views.AddressView.as_view(),name='address'),
+    path('search/',views.SearchView.as_view(),name='search'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

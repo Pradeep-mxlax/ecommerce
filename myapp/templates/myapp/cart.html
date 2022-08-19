@@ -244,8 +244,11 @@
                             <h5 class="font-weight-bold">Total</h5>
                             <h5 class="font-weight-bold">₹{{cart.total_price}}</h5>
                         </div>
-                        
-                        <a href="{% url 'checkout' %}" class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</a>
+                        <form action="/checkout/" method="post">
+                            {% csrf_token %}
+
+                            <button  class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -268,25 +271,9 @@
                 <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
                 <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
             </div>
-            <div class="col-lg-8 col-md-12">
+            <div class="col-lg-8 col-md-12 ">
                 <div class="row">
-                    <div class="col-md-4 mb-5">
-                        <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
-                        <div class="d-flex flex-column justify-content-start">
-                            <a class="text-dark mb-2" href="/"><i class="fa fa-angle-right mr-2"></i>Home</a>
-                            <a class="text-dark mb-2" href="shop.html"><i class="fa fa-angle-right mr-2"></i>Our
-                                Shop</a>
-                            <a class="text-dark mb-2" href="detail.html"><i class="fa fa-angle-right mr-2"></i>Shop
-                                Detail</a>
-                            <a class="text-dark mb-2" href="cart.html"><i class="fa fa-angle-right mr-2"></i>Shopping
-                                Cart</a>
-                            <a class="text-dark mb-2" href="checkout.html"><i
-                                    class="fa fa-angle-right mr-2"></i>Checkout</a>
-                            <a class="text-dark" href="contact.html"><i class="fa fa-angle-right mr-2"></i>Contact
-                                Us</a>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-5">
+                    <!-- <div class="col-md-4 mb-5">
                         <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
                         <div class="d-flex flex-column justify-content-start">
                             <a class="text-dark mb-2" href="index.html"><i class="fa fa-angle-right mr-2"></i>Home</a>
@@ -301,17 +288,33 @@
                             <a class="text-dark" href="contact.html"><i class="fa fa-angle-right mr-2"></i>Contact
                                 Us</a>
                         </div>
+                    </div> -->
+                    <div class="col-md-5 mb-5 ml-2" >
+                        <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
+                        <div class="d-flex flex-column justify-content-start">
+                            <a class="text-dark mb-2" href="/"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                            <!-- <a class="text-dark mb-2" href="shop.html"><i class="fa fa-angle-right mr-2"></i>Our
+                                Shop</a> -->
+                            <!-- <a class="text-dark mb-2" href="detail.html"><i class="fa fa-angle-right mr-2"></i>Shop
+                                Detail</a> -->
+                            <a class="text-dark mb-2" href="cart"><i class="fa fa-angle-right mr-2"></i>Shopping
+                                Cart</a>
+                            <!-- <a class="text-dark mb-2" href="checkout.html"><i
+                                    class="fa fa-angle-right mr-2"></i>Checkout</a> -->
+                            <a class="text-dark" href="contact"><i class="fa fa-angle-right mr-2"></i>Contact
+                                Us</a>
+                        </div>
                     </div>
-                    <div class="col-md-4 mb-5">
+                    <div class="col-md-5 mb-5">
                         <h5 class="font-weight-bold text-dark mb-4">Newsletter</h5>
                         <form action="">
                             <div class="form-group">
                                 <input type="text" class="form-control border-0 py-4" placeholder="Your Name"
-                                    required="required" />
+                                     />
                             </div>
                             <div class="form-group">
                                 <input type="email" class="form-control border-0 py-4" placeholder="Your Email"
-                                    required="required" />
+                                     />
                             </div>
                             <div>
                                 <button class="btn btn-primary btn-block border-0 py-3" type="submit">Subscribe
@@ -359,15 +362,12 @@
         // function plus(product_id) {
         //     let product_price = document.getElementById(`prd${product_id}`).innerText;
         //     let hidden_price = document.getElementById(`hid${product_id}`).value;
-        //     // quantity = document.getElementById(`qut${product_id}`).value;
+        //     quantity = document.getElementById(`qut${product_id}`).value;
         //     console.log(product_price,hidden_price,Number(product_price) + Number(hidden_price))
         //     let price = Number(product_price) + Number(hidden_price)
         //     document.getElementById(`prd${product_id}`).innerText =  price
         // }
-        // function plus(product_id) {
-        //     quantity = document.getElementById(`qut${product_id}`).value;
-        //     console.log(quantity)
-        // }
+
     </script>
 </body>
 
