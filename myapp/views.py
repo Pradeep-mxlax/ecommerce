@@ -4,7 +4,7 @@ from django.views import View
 from .forms import *
 from django.contrib.auth import authenticate,login,logout
 from .models import *
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import DeleteView,BaseUpdateView
 # Create your views here.
 
 class HomeView(View):
@@ -198,13 +198,23 @@ class CheckoutView(View):
     def get(self,request,*args,**kwargs):
         if request.user.is_authenticated:
             product_id = request.GET.get('pid')
+            address = Address.objects.filter(user=request.user)
             if product_id:
-                product = Product.objects.get(id=product_id)
-                return render(request, "myapp/checkout.html",{'prd':product})
+                product_data = Product.objects.get(id=product_id)
+                context = {
+                            'prd':product_data,
+                            'address' : address
+                }
+                return render(request, "myapp/checkout.html",context)
             else:
                 cart = Cart.objects.get(user=request.user)
                 cartitem = cart.cart_cartitem.all()
-                return render(request, "myapp/checkout.html",{'cart':cart,'cartitem':cartitem})
+                context = {
+                            'cart':cart,
+                            'cartitem':cartitem,
+                            'address' : address
+                }
+                return render(request, "myapp/checkout.html",context)
         else:
             return redirect('login')
         return render(request, "myapp/checkout.html")
@@ -212,13 +222,23 @@ class CheckoutView(View):
     def post(self,request,*args,**kwargs):
         if request.user.is_authenticated:
             product_id = request.GET.get('pr_id')
+            address = Address.objects.filter(user=request.user)
             if product_id:
                 product_data = Product.objects.get(id=product_id)
-                return render(request, "myapp/checkout.html",{'prd':product_data})
+                context = {
+                            'prd':product_data,
+                            'address' : address
+                }
+                return render(request, "myapp/checkout.html",context)
             else:
                 cart = Cart.objects.get(user=request.user)
                 cartitem = cart.cart_cartitem.all()
-                return render(request, "myapp/checkout.html",{'cart':cart,'cartitem':cartitem})
+                context = {
+                            'cart':cart,
+                            'cartitem':cartitem,
+                            'address' : address
+                }
+                return render(request, "myapp/checkout.html",context)
         else:
             return redirect('login')
 
@@ -233,6 +253,7 @@ class AddressView(View):
     """ user product checkout class """
 
     def post(self,request,*args, **kwargs):
+        # import pdb;pdb.set_trace()
         pid = request.GET['pr_id']
         name = request.POST['name']
         number = request.POST['number']
@@ -244,6 +265,24 @@ class AddressView(View):
 
         Address.objects.create(user=request.user,name=name,phone_number=number,address1=address,pin_code=pincode,city=city,state=state,country=country)
         return redirect(f'/checkout/?pid={pid}')
+
+def editAddress(request):
+    if request.method == "POST":
+        pid = request.GET.get('pr_id')
+        # print(pid)
+        address_id = request.POST['address_id']
+        print('kjfkdfj',address_id)
+        name = request.POST['name']
+        number = request.POST['number']
+        address = request.POST['address']
+        pincode = request.POST['pincode']
+        city = request.POST['city']
+        state = request.POST['state']
+        country = request.POST['country']
+        print(pid,name,number,address,address_id,pincode,city,state,country)
+        Address.objects.filter(id=address_id).update(user=request.user,name=name,phone_number=number,address1=address,pin_code=pincode,city=city,state=state,country=country)
+        return redirect(f'/checkout/?pid={pid}')
+       
 
 class SearchView(View):
     def get(self,request,*args, **kwargs):
@@ -258,3 +297,9 @@ class SearchView(View):
         product_data = Product.objects.filter(title__icontains=data)
         print(product_data)
         return render(request, "myapp/search.html",{'product_data':product_data})
+
+class orderView(View):
+   def post(self,request,*args, **kwargs):
+        address = request.POST.get('address')
+        print(address)
+        return HttpResponse('sdnnb') 

@@ -25,7 +25,24 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{% static 'website/css/style.css' %}" rel="stylesheet">
+    <style>
+        .address {
+            background-color: cornsilk;
+            border: 1p solid black;
+            padding: 20px;
+            margin-bottom: 10px;
+        }
 
+        .address h5 {
+            color: rgb(227, 119, 80);
+        }
+
+        .radio_botton {
+            border: 1px solid blue;
+            height:15px;
+            width:15px;
+        }
+    </style>
 </head>
 
 <body>
@@ -46,29 +63,62 @@
         <div class="row px-xl-5">
             <div class="col-lg-8">
                 <div class="mb-4">
+                    {% if address %}
+                    <h5>DELIVERY ADDRESS</h5>
+                    <form action="/order/" method="post">
+                        {% csrf_token %}
+                    {% for data in address %}
+                    <div class="address  ">
+                        <div class=" d-flex justify-content-between ">
+                            <input type="radio" class="radio_botton" name="address" value="{{data.id}}" >
+                            <p> <strong>{{data.name}}</strong> {{data.address1}}, {{data.state}} -
+                                <strong>{{data.pin_code}}</strong>
+                            </p>
+
+                            <div class=" border-secondary  ml-5 " style="width: 15%; ">
+                                <button class="btn bg-warning btn-block btn-primary  my-3" type="button"   data-toggle="collapse" data-target="#shipping-address{{data.id}}" onClick="collapse({{data.id}})">Change</button>
+                            </div>
+                        </div>
+                        <div id="toggle{{data.id}}">
+
+                        </div>
+                    </div>
+                        {% endfor %}
+                       
+                        <div style="width: 25%; height: 10%; float: right;">
+                            <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-2">Place Order</button>
+                        </div>
+                    </form>
+                        <!-- <div class=" border-secondary  ml-5 d-inline-flex " style="width: 25%; ">
+                                <button class="btn  btn-lg btn-block btn-primary font-weight-bold  my-3"  data-toggle="collapse" data-target="#shipping-address">Add Address</button>
+                            </div> -->
+
+                    {% else %}
                     <h4 class="font-weight-semi-bold mb-4">Billing Address</h4>
-                    <form action="/addreess/?pr_id={{prd.id}}" method="post">
+                    <form action="/address/?pr_id={{prd.id}}" method="post">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6 form-group">
-                                <label>Name</label>
-                                <input class="form-control" name='name' type="text" placeholder="Enter full name " required>
+                                <input class="form-control" name='name' type="text" placeholder="Enter full name "
+                                    required>
                             </div>
                             <div class="col-md-6 form-group">
-                                <label>Mobile No</label>
-                                <input class="form-control" name="number" type="text" placeholder="10-digit mobile number" pattern="[789][0-9]{9}" required>
+                                <!-- <label>Mobile No</label> -->
+                                <input class="form-control" name="number" type="text"
+                                    placeholder="10-digit mobile number" pattern="[789][0-9]{9}" required>
                             </div>
                             <div class="col-md-6 form-group">
-                                <label>Address</label>
-                                <textarea name="address" style="resize:none" class="form-control" id="" cols="20" rows="2" placeholder="Enter order address" required></textarea>
+                                <!-- <label>Address</label> -->
+                                <textarea name="address" style="resize:none" class="form-control" id="" cols="20"
+                                    rows="2" placeholder="Enter order address" required></textarea>
                                 <!-- <input class="form-control" type="text" > -->
                             </div>
                             <div class="col-md-6 form-group">
-                                <label>Pincode</label>
+                                <!-- <label>Pincode</label> -->
                                 <input class="form-control" name="pincode" type="number" placeholder="pincode" required>
                             </div>
                             <div class="col-md-6 form-group">
-                                <label>City</label>
+                                <!-- <label>City</label> -->
                                 <input class="form-control" name="city" type="text" placeholder="Enter city" required>
                             </div>
                             <!-- <div class="col-md-6 form-group">
@@ -76,87 +126,33 @@
                                 <input class="form-control" type="text" placeholder="123 Street">
                             </div> -->
                             <div class="col-md-6 form-group">
-                                <label>State</label>
-                                <select class="custom-select" name="state" required>
+                                <!-- <label>State</label> -->
+                                <select class="custom-select" name="state" placeholder="State" required>
                                     <option selected value="">--Select State--</option>
-                                    <option >Madhya Pradesh</option>
+                                    <option>Madhya Pradesh</option>
                                     <option>Gujrat</option>
                                 </select>
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>Country</label>
-                                <select class="custom-select" name="country" required>
+                                <select class="custom-select" name="country" aria-placeholder="Country" required>
                                     <option selected value="">--Select Country--</option>
-                                    <option  value="India" >India</option>
-                                    <option value="United States" >United States</option>
+                                    <option value="India">India</option>
+                                    <option value="United States">United States</option>
                                     <option value="Afghanistan">Afghanistan</option>
                                     <option value="Albania">Albania</option>
                                     <option value="Algeria">Algeria</option>
                                 </select>
                             </div>
-                            <!-- <div class="col-md-12 form-group">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="shipto">
-                                    <label class="custom-control-label" for="shipto" data-toggle="collapse"
-                                        data-target="#shipping-address">Ship to different address</label>
-                                </div>
-                            </div> -->
                         </div>
-                        <div class=" border-secondary bg-danger ml-5"  style="width: 40%;" >
-                            <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 ">Save and Deliver Here</button>
+                        <div class=" border-secondary bg-danger ml-5" style="width: 40%;">
+                            <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 " type="submit">Save
+                                and Deliver
+                                Here</button>
                         </div>
-                    <form>
+                        <form>
+                            {% endif %}
                 </div>
-                <!-- <div class="collapse mb-4" id="shipping-address">
-                    <h4 class="font-weight-semi-bold mb-4">Shipping Address</h4>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label>First Name</label>
-                            <input class="form-control" type="text" placeholder="John">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Last Name</label>
-                            <input class="form-control" type="text" placeholder="Doe">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>E-mail</label>
-                            <input class="form-control" type="text" placeholder="example@email.com">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Mobile No</label>
-                            <input class="form-control" type="text" placeholder="+123 456 789">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Address Line 1</label>
-                            <input class="form-control" type="text" placeholder="123 Street">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Address Line 2</label>
-                            <input class="form-control" type="text" placeholder="123 Street">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Country</label>
-                            <select class="custom-select">
-                                <option selected>United States</option>
-                                <option>Afghanistan</option>
-                                <option>Albania</option>
-                                <option>Algeria</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>City</label>
-                            <input class="form-control" type="text" placeholder="New York">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>State</label>
-                            <input class="form-control" type="text" placeholder="New York">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>ZIP Code</label>
-                            <input class="form-control" type="text" placeholder="123">
-                        </div>
-                    </div>
-                </div> -->
             </div>
             <div class="col-lg-4">
                 <div class="card border-secondary mb-5">
@@ -164,7 +160,6 @@
                         <h4 class="font-weight-semi-bold m-0">Order Total</h4>
                     </div>
                     <div class="card-body">
-                        <!-- <h5 class="font-weight-medium mb-3">Products</h5> -->
                         <div class="d-flex justify-content-between mb-3 pt-1">
                             {% if prd %}
                             <h6 class="font-weight-medium">Price (1 item)</h6>
@@ -221,9 +216,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer border-secondary bg-transparent">
+                    <!-- <div class="card-footer border-secondary bg-transparent">
                         <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -247,7 +242,7 @@
             </div>
             <div class="col-lg-8 col-md-12 ">
                 <div class="row">
-                    <div class="col-md-5 mb-5 ml-2" >
+                    <div class="col-md-5 mb-5 ml-2">
                         <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
                         <div class="d-flex flex-column justify-content-start">
                             <a class="text-dark mb-2" href="/"><i class="fa fa-angle-right mr-2"></i>Home</a>
@@ -267,12 +262,10 @@
                         <h5 class="font-weight-bold text-dark mb-4">Newsletter</h5>
                         <form action="">
                             <div class="form-group">
-                                <input type="text" class="form-control border-0 py-4" placeholder="Your Name"
-                                     />
+                                <input type="text" class="form-control border-0 py-4" placeholder="Your Name" />
                             </div>
                             <div class="form-group">
-                                <input type="email" class="form-control border-0 py-4" placeholder="Your Email"
-                                     />
+                                <input type="email" class="form-control border-0 py-4" placeholder="Your Email" />
                             </div>
                             <div>
                                 <button class="btn btn-primary btn-block border-0 py-3" type="submit">Subscribe
@@ -314,6 +307,80 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'website/js/main.js' %}"></script>
+    <script>
+    function collapse(aid){
+        // alert('ldjkjhb')
+        document.getElementById(`toggle${aid}`).innerHTML = ` 
+        
+                        <div class="collapse mb-4" id="shipping-address">
+                            
+                            <div class="mb-4">
+                                <h4 class="font-weight-semi-bold mb-4">Billing Address</h4>
+                                <form action="/editaddress/?pr_id={{prd.id}}" method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <input class="form-control" value="${aid}" name='address_id' type="hidden" >
+                                        <div class="col-md-6 form-group">
+
+                                            <input class="form-control" name='name' type="text"
+                                                placeholder="Enter full name " required>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+
+                                            <input class="form-control" name="number" type="text"
+                                                placeholder="10-digit mobile number" pattern="[789][0-9]{9}" required>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+
+                                            <textarea name="address" style="resize:none" class="form-control" id=""
+                                                cols="20" rows="2" placeholder="Enter order address"
+                                                required></textarea>
+
+                                        </div>
+                                        <div class="col-md-6 form-group">
+
+                                            <input class="form-control" name="pincode" type="number"
+                                                placeholder="pincode" required>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+
+                                            <input class="form-control" name="city" type="text" placeholder="Enter city"
+                                                required>
+                                        </div>
+
+                                        <div class="col-md-6 form-group">
+                                            <select class="custom-select" name="state" placeholder="State" required>
+                                                <option selected value="">--Select State--</option>
+                                                <option>Madhya Pradesh</option>
+                                                <option>Gujrat</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <select class="custom-select" name="country" placeholder="Country" required>
+                                                <option selected value="">--Select Country--</option>
+                                                <option value="India">India</option>
+                                                <option value="United States">United States</option>
+                                                <option value="Afghanistan">Afghanistan</option>
+                                                <option value="Albania">Albania</option>
+                                                <option value="Algeria">Algeria</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class=" border-secondary bg-danger ml-5" style="width: 40%;">
+                                        <button
+                                            class="btn btn-lg btn-block btn-primary font-weight-bold my-3 ">Change</button>
+                                    </div>
+                                    <form>
+                            </div>
+                        </div>
+                        `;
+
+            document.getElementById('shipping-address').id = `shipping-address${aid}`;
+    }
+
+
+    </script>
 </body>
 
 </html>
