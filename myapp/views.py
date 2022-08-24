@@ -4,9 +4,7 @@ from django.views import View
 from .forms import *
 from django.contrib.auth import authenticate,login,logout
 from .models import *
-from django.views.generic.edit import DeleteView,BaseUpdateView
-# Create your views here.
-
+from django.db.models import Q
 class HomeView(View):
     """ user home page class """
     def get(self,request):
@@ -14,7 +12,12 @@ class HomeView(View):
             cart = Cart.objects.filter(user=request.user)
             if not cart:
                 Cart.objects.create(user=request.user)
+        # dul = Category.objects.filter(category_name__in=[SubCategory.objects.all()]).distinct()
+        # print('mcnnk',dul)
         categories = Category.objects.all()
+        # for cat in categories:
+        #     for j in cat.sub_cat.all().distinct():
+        #         print(',;kj',j.sub_cat_name)
         product_data = Product.objects.all()
         context = {
                 'categories' : categories,
@@ -74,17 +77,26 @@ class loguotView(View):
 class ProfileView(View):
     """ user profile class """
     def get(self,request):
-
-        user_data = request.user   
-        return render(request, 'user/profile.html',{'user_data':user_data})
-    
+        if request.user.is_authenticated:
+            address = Address.objects.filter(user=request.user).order_by('-id')
+            user_data = request.user   
+            user_data = User_More_Detail.objects.get(user=request.user)
+            context = {
+                        'user_data':user_data,
+                        'address':address,
+                        'user_data' : user_data
+                        }
+            return render(request, 'user/profile.html',context)
+        return redirect('login')
     def post(self,request):
-        first_name = request.POST['first-name']
-        last_name = request.POST['last-name']
-        img = request.FILES['image']
-        gender = request.POST['gender']
-        birth = request.POST['dob']
-        User_More_Detail(user=request.user,first_name=first_name,last_name=last_name,image=img,gender=gender,date_of_birth=birth).save()
+        user_data = User_More_Detail.objects.get(user=request.user)
+        if not user_data:
+            first_name = request.POST['first-name']
+            last_name = request.POST['last-name']
+            img = request.FILES['image']
+            gender = request.POST['gender']
+            birth = request.POST['dob']
+            User_More_Detail(user=request.user,first_name=first_name,last_name=last_name,image=img,gender=gender,date_of_birth=birth).save()
         return redirect('profile')
 
 
@@ -170,6 +182,8 @@ class DetailView(View):
     def get(self,request,*args,**kwargs):
         categories = Category.objects.all()
         product_data = Product.objects.get(id=kwargs['pid'])
+        p = Product.objects.filter(category=product_data.category).exclude(id=kwargs['pid'])
+        # print('prolfjh',p)
         context = {
                 'categories' : categories,
                 'product_data' : product_data
@@ -185,6 +199,7 @@ class ShopView(View):
         categories = Category.objects.all()
         sub_data = SubCategory.objects.get(id=kwargs['sid'])
         product_data= Product.objects.filter(sub_category=sub_data)
+        # import pdb;pdb.set_trace()
         context = {
                 'categories' : categories,
                 'product_data' : product_data
@@ -197,7 +212,7 @@ class CheckoutView(View):
 
     def get(self,request,*args,**kwargs):
         if request.user.is_authenticated:
-            product_id = request.GET.get('pid')
+            product_id = request.GET.get('pr_id')
             address = Address.objects.filter(user=request.user)
             if product_id:
                 product_data = Product.objects.get(id=product_id)
@@ -217,12 +232,12 @@ class CheckoutView(View):
                 return render(request, "myapp/checkout.html",context)
         else:
             return redirect('login')
-        return render(request, "myapp/checkout.html")
+        # return render(request, "myapp/checkout.html")
 
     def post(self,request,*args,**kwargs):
         if request.user.is_authenticated:
             product_id = request.GET.get('pr_id')
-            address = Address.objects.filter(user=request.user)
+            address = Address.objects.filter(user=request.user).order_by('-id')
             if product_id:
                 product_data = Product.objects.get(id=product_id)
                 context = {
@@ -264,14 +279,16 @@ class AddressView(View):
         country = request.POST['country']
 
         Address.objects.create(user=request.user,name=name,phone_number=number,address1=address,pin_code=pincode,city=city,state=state,country=country)
-        return redirect(f'/checkout/?pid={pid}')
+        if pid == 'yes':
+            user_data = request.user   
+            return render(request, 'user/profile.html',{'user_data':user_data}) 
+        else:
+            return redirect(f'/checkout/?pid={pid}')
 
 def editAddress(request):
     if request.method == "POST":
         pid = request.GET.get('pr_id')
-        # print(pid)
         address_id = request.POST['address_id']
-        print('kjfkdfj',address_id)
         name = request.POST['name']
         number = request.POST['number']
         address = request.POST['address']
@@ -279,27 +296,48 @@ def editAddress(request):
         city = request.POST['city']
         state = request.POST['state']
         country = request.POST['country']
-        print(pid,name,number,address,address_id,pincode,city,state,country)
         Address.objects.filter(id=address_id).update(user=request.user,name=name,phone_number=number,address1=address,pin_code=pincode,city=city,state=state,country=country)
-        return redirect(f'/checkout/?pid={pid}')
+        if pid == 'yes':
+            return redirect('profile')
+        else:
+            return redirect(f'/checkout/?pid={pid}')
        
 
 class SearchView(View):
     def get(self,request,*args, **kwargs):
+        data = request.GET.get('search')
+        product_list = set()
         categories = Category.objects.all()
-        context = {
-                'categories' : categories,
-        }
-        return render(request, "myapp/search.html",context)
-
-    def post(self,request,*args, **kwargs):
-        data = request.POST['search']
         product_data = Product.objects.filter(title__icontains=data)
-        print(product_data)
-        return render(request, "myapp/search.html",{'product_data':product_data})
+        category_data = Category.objects.filter(category_name__icontains=data)
+        subcategory_data = SubCategory.objects.filter(sub_cat_name__icontains=data)
+        print(product_data,category_data,subcategory_data)
+        for prd in product_data:
+            product_list.add(prd)
+
+        for sub in subcategory_data:
+            for data in sub.prd_subcat.all():
+                product_list.add(data)
+
+        for cat in category_data:
+            for data in cat.prd_cat.all():
+                product_list.add(data)
+       
+        context ={
+                'product_list':list(product_list),
+                'categories' : categories,
+
+                }
+        return render(request, "myapp/search.html",context)
 
 class orderView(View):
    def post(self,request,*args, **kwargs):
-        address = request.POST.get('address')
-        print(address)
-        return HttpResponse('sdnnb') 
+        product = request.POST.get('product_id')
+        address = request.POST.get('address_id')
+        return HttpResponse(f' {address} {product} sdnnb') 
+
+class DeleteAddressView(View):
+    def get(self,request,*args, **kwargs):
+        address_id = request.GET.get('address_id')
+        Address.objects.filter(id=address_id).delete()
+        return redirect('profile')

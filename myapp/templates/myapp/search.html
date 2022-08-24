@@ -2,23 +2,21 @@
 {% load static %}
 {% block body %}
 <div class="container-fluid pt-5">
-       <div class="row px-xl-5 pb-3">
-           {% for data in product_data %}
-           <div class="col-lg-4 col-md-6 pb-1 cat-item " width="100">
-               <div class=" d-flex flex-column border mb-4" style="padding: 30px;">
-                   <!-- <p class="text-right">15 Products</p> -->
-                 
-                   <!-- <div > -->
-                       <a href="{% url 'detail' data.id %}" class="cat-img position-relative overflow-hidden mb-3" >
-                           <img class="img-fluid" style="height: 200px;" src="../../../media/{{data.media_prd.first.image.name}}" alt="load">
-                       </a>
-                   <!-- </div> -->
-                  
-                   <h6 class="font-weight-semi m-0">{{data.name}}</h6>
-               </div>
-           </div>
-           {% endfor %}
-           
-       </div>
-   </div>
+    <div class="row px-xl-5 pb-3">
+        {% for data in product_list %}
+        
+
+        <div class="col-lg-4 col-md-6 pb-1 cat-item " width="100">
+            <div class=" d-flex flex-column border mb-4" style="padding: 30px;">
+                    <a href="{% url 'detail' data.id %}" class="cat-img position-relative  mb-3" >
+                        <img class="img-fluid" style="height: 200px;" src="../../../media/{{data.media_prd.first.image.name}}" alt="load">
+                    </a>
+               <p style="text-overflow: ellipsis; white-space: nowrap; overflow : hidden; "><a href="{% url 'detail' data.id %}" title="{{data.title}}" class=" text-decoration-none  text-dark font-weight-semi m-0">{{data.title}} </a></p> 
+            </div>
+        </div>
+       
+        {% endfor %}
+
+    </div>
+</div>
 {% endblock body %}

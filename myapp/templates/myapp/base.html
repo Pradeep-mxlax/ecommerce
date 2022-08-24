@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>EShopper - Bootstrap Shop Template</title>
+    <title>EShopper </title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
@@ -65,7 +65,7 @@
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
-                <form action="/search/" method="post">
+                <form action="/search/" method="get">
                     {% csrf_token %}
                     <div class="input-group">
                         <input type="text" name="search" class="form-control" placeholder="Search for products">
@@ -107,7 +107,7 @@
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link" data-toggle="dropdown">{{cat.category_name}} <i class="fa fa-angle-down float-right mt-1"></i></a>
                             <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                                {% for subcat in cat.sub_cat.all %}
+                                {% for subcat in cat.sub_cat.all  %}
                                 <a href="{% url 'shop' subcat.id %}" class="dropdown-item">{{subcat.sub_cat_name}}</a>
                                 {% endfor %}
                             </div>
