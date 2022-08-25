@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import ModelForm
 from django.forms import ModelForm,TextInput,FileInput,Select,DateInput
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth.models  import User
@@ -23,14 +24,14 @@ class LoginForm(AuthenticationForm):
     #     model = User
     #     fields = ("username", "password")
 
-# class User_More_DetailForm(ModelForm):
-#     class Meta:
-#         model = User_More_Detail
-#         fields = ('user','first_name','last_name','image','gender','date_of_birth')
-#         widgets = {
-#             'first_name': TextInput(attrs={'class':'form-control','placeholder':'First Name'}),
-#             'last_name': TextInput(attrs={'class':'form-control','placeholder':'Last Name'}),
-#             'image': FileInput(attrs={'class':'form-control',"style":"display: none",}),
-#             'gender':Select(attrs={'class':'form-control',}),
-#             'date_of_birth':DateInput(attrs={'class':'form-control','placeholder':'Enter a date in this format YYYY-MM-DD'}),
-#         }
+class User_More_DetailForm(ModelForm):
+    class Meta:
+        model = User_More_Detail
+        fields = ('first_name','last_name','image','gender','date_of_birth')
+        widgets = {
+            'first_name': TextInput(attrs={'class':'form-control','placeholder':'First Name'}),
+            'last_name': TextInput(attrs={'class':'form-control','placeholder':'Last Name'}),
+            'image': FileInput(attrs={'class':'form-control',"style":"display: none",}),
+            'gender':Select(attrs={'class':'form-control',}),
+            'date_of_birth':DateInput(attrs={'class':'form-control','placeholder':'Enter a date in this format YYYY-MM-DD'}),
+        }

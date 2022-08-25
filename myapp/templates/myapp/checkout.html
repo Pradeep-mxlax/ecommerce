@@ -91,8 +91,8 @@
                     <!-- start add addredd popup -->
 
                     <!-- Button trigger modal -->
-                    <div style="width: 25%; height: 10%; float: left;">
-                        <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-2" data-toggle="modal" data-target="#exampleModalLong">Place
+                    <div style="float: left;">
+                        <button class="btn btn-lg btn-block btn-primary  my-3 py-2" data-toggle="modal" data-target="#exampleModalLong">Add New Address
                     </div>
                     <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
                         Launch demo modal
@@ -104,7 +104,7 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Add Address</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -115,7 +115,7 @@
                                         <div class="row">
                                             <div class="col-md-6 form-group">
                                                 <input class="form-control" name='name' type="text" placeholder="Enter full name "
-                                                    required>
+                                                    required>   
                                             </div>
                                             <div class="col-md-6 form-group">
                                                 <!-- <label>Mobile No</label> -->
@@ -172,16 +172,7 @@
                     </div>
                     <!-- end add addredd popup -->
                     
-                    <form action="/order/" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="address_id" id="address_id" value="">
-                        <input type="hidden" name="product_id" id="product_id" value="{{prd.id}}">
-                        <div style="width: 25%; height: 10%; float: right;">
-                            <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-2"
-                                id="place-order">Place
-                                Order</button>
-                        </div>
-                    </form>
+                   
                     <!-- order form end -->
 
                     {% else %}
@@ -262,7 +253,7 @@
                         <hr class="mt-0">
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">₹10</h6>
+                            <h6 class="font-weight-medium">₹0</h6>
                         </div>
                     </div>
                     <div class="card-footer border-secondary bg-transparent">
@@ -306,9 +297,16 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="card-footer border-secondary bg-transparent">
-                        <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</button>
-                    </div> -->
+                    <form action="/order/" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="address_id" id="address_id" value="">
+                        <input type="hidden" name="product_id" id="product_id" value="{{prd.id}}">
+                        <div style=" height: 10%; float: right;">
+                            <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-2"
+                                id="place-order">Place
+                                Order</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -496,7 +494,6 @@
 
             document.getElementById('shipping-address').id = `shipping-address${aid}`;
         }
-
 
     </script>
 </body>

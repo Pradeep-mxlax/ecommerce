@@ -12,7 +12,7 @@ class User_More_Detail(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='normal_user')
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='images/',default='')
+    image = models.ImageField(upload_to='images/')
     gender = models.CharField(max_length=10,choices=GENDER)
     date_of_birth = models.DateField()
     def __str__(self):

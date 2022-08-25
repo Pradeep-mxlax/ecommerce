@@ -31,6 +31,8 @@
         <div class="row bg-secondary py-2 px-xl-5">
             <div class="col-lg-6 d-none d-lg-block">
                 <div class="d-inline-flex align-items-center">
+                    <a class="text-dark" href="/">HOME</a>
+                    <span class="text-muted px-2">|</span>
                     <a class="text-dark" href="">FAQs</a>
                     <span class="text-muted px-2">|</span>
                     <a class="text-dark" href="">Help</a>
@@ -85,7 +87,7 @@
                 <button></button>
                 <a href="{% url 'cart' %}" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
+                    <span class="badge">{{cartitem|length}}</span>
                 </a>
             </div>
         </div>
@@ -128,29 +130,30 @@
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
                             <a href="/" class="nav-item nav-link active">Home</a>
-                            <!-- <a href="shop.html" class="nav-item nav-link">Shop</a> -->
-                            <!-- <a href="detail.html" class="nav-item nav-link">Shop Detail</a> -->
-                            <!-- <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="cart.html" class="dropdown-item">Shopping Cart</a>
-                                    <a href="checkout.html" class="dropdown-item">Checkout</a>
-                                </div>
-                            </div> -->
                             <a href="contact.html" class="nav-item nav-link">Contact</a>
-                            <div class="nav-item dropdown">
+                            <!-- <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Profile</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href="{% url 'profile' %}" class="dropdown-item">User Profile</a>
                                     <a href="{% url 'loguot' %}" class="dropdown-item">Logout</a>
                                 </div>
-                            </div>
+                            </div> -->
                         
                         </div>
                         <div class="navbar-nav ml-auto py-0">
                             {% if  not request.user.is_authenticated %}
                             <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
                             <a href="{% url 'register' %}" class="nav-item nav-link">Register</a>
+                            {% endif %}
+                            {% if   request.user.is_authenticated %}
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link nav-item" data-toggle="dropdown">Login <span class="text-info dropdown-toggle " >{{user.username}}</span> </a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="{% url 'profile' %}" class="dropdown-item">User Profile</a>
+                                    <a href="{% url 'loguot' %}" class="dropdown-item">Logout</a>
+                                </div>
+                            </div>
+                            <!-- <div  class="nav-item "> Login <a href="{% url 'profile' %}" class="text-info"> {{user.username}}</a> </div> -->
                             {% endif %}
                         </div>
                     </div>
@@ -210,34 +213,12 @@
             </div>
             <div class="col-lg-8 col-md-12 ">
                 <div class="row">
-                    <!-- <div class="col-md-4 mb-5">
-                        <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
-                        <div class="d-flex flex-column justify-content-start">
-                            <a class="text-dark mb-2" href="index.html"><i class="fa fa-angle-right mr-2"></i>Home</a>
-                            <a class="text-dark mb-2" href="shop.html"><i class="fa fa-angle-right mr-2"></i>Our
-                                Shop</a>
-                            <a class="text-dark mb-2" href="detail.html"><i class="fa fa-angle-right mr-2"></i>Shop
-                                Detail</a>
-                            <a class="text-dark mb-2" href="cart.html"><i class="fa fa-angle-right mr-2"></i>Shopping
-                                Cart</a>
-                            <a class="text-dark mb-2" href="checkout.html"><i
-                                    class="fa fa-angle-right mr-2"></i>Checkout</a>
-                            <a class="text-dark" href="contact.html"><i class="fa fa-angle-right mr-2"></i>Contact
-                                Us</a>
-                        </div>
-                    </div> -->
                     <div class="col-md-5 mb-5 ml-2" >
                         <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
                         <div class="d-flex flex-column justify-content-start">
                             <a class="text-dark mb-2" href="/"><i class="fa fa-angle-right mr-2"></i>Home</a>
-                            <!-- <a class="text-dark mb-2" href="shop.html"><i class="fa fa-angle-right mr-2"></i>Our
-                                Shop</a> -->
-                            <!-- <a class="text-dark mb-2" href="detail.html"><i class="fa fa-angle-right mr-2"></i>Shop
-                                Detail</a> -->
                             <a class="text-dark mb-2" href="cart"><i class="fa fa-angle-right mr-2"></i>Shopping
                                 Cart</a>
-                            <!-- <a class="text-dark mb-2" href="checkout.html"><i
-                                    class="fa fa-angle-right mr-2"></i>Checkout</a> -->
                             <a class="text-dark" href="contact"><i class="fa fa-angle-right mr-2"></i>Contact
                                 Us</a>
                         </div>

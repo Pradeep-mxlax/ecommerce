@@ -4,27 +4,32 @@ from django.views import View
 from .forms import *
 from django.contrib.auth import authenticate,login,logout
 from .models import *
-from django.db.models import Q
+from django.contrib import messages
 class HomeView(View):
     """ user home page class """
     def get(self,request):
+        categories = Category.objects.all()
+        product_data = Product.objects.all()
         if request.user.is_authenticated:
-            cart = Cart.objects.filter(user=request.user)
+            cart = Cart.objects.get(user=request.user)
+            cartitem = CartItem.objects.filter(cart=cart)
             if not cart:
                 Cart.objects.create(user=request.user)
-        # dul = Category.objects.filter(category_name__in=[SubCategory.objects.all()]).distinct()
-        # print('mcnnk',dul)
-        categories = Category.objects.all()
-        # for cat in categories:
-        #     for j in cat.sub_cat.all().distinct():
-        #         print(',;kj',j.sub_cat_name)
-        product_data = Product.objects.all()
-        context = {
-                'categories' : categories,
-                'product_data' : product_data
-        }
-        return render(request, "myapp/home_detail.html",context)
+        
+            context = {
+                    'categories' : categories,
+                    'product_data' : product_data,
+                    'cartitem' : cartitem,
+                    # 'user' : request.user
+            }
+            return render(request, "myapp/home_detail.html",context)
+        else:
 
+            context = {
+                    'categories' : categories,
+                    'product_data' : product_data,
+            }
+            return render(request, "myapp/home_detail.html",context)
 
 class RegistrationView(View):
     """ user register class """
@@ -79,24 +84,30 @@ class ProfileView(View):
     def get(self,request):
         if request.user.is_authenticated:
             address = Address.objects.filter(user=request.user).order_by('-id')
-            user_data = request.user   
-            user_data = User_More_Detail.objects.get(user=request.user)
+            user = request.user   
+            user_data = User_More_Detail.objects.filter(user=request.user).first()
             context = {
-                        'user_data':user_data,
+                        'user':user,
                         'address':address,
                         'user_data' : user_data
                         }
             return render(request, 'user/profile.html',context)
         return redirect('login')
     def post(self,request):
-        user_data = User_More_Detail.objects.get(user=request.user)
-        if not user_data:
-            first_name = request.POST['first-name']
-            last_name = request.POST['last-name']
-            img = request.FILES['image']
-            gender = request.POST['gender']
-            birth = request.POST['dob']
-            User_More_Detail(user=request.user,first_name=first_name,last_name=last_name,image=img,gender=gender,date_of_birth=birth).save()
+        user_data = User_More_Detail.objects.filter(user=request.user).first()
+        first_name = request.POST['first-name']
+        last_name = request.POST['last-name']
+        image = request.FILES.get('image')
+        # import pdb;pdb.set_trace()
+        gender = request.POST['gender']
+        birth = request.POST['dob']
+        if image is None:
+            messages.info(request, 'please add image ')
+            return redirect('/profile/')
+        if user_data:
+            User_More_Detail.objects.filter(user=request.user).update(first_name=first_name,last_name=last_name,image=image,gender=gender,date_of_birth=birth)
+        else:
+            User_More_Detail(user=request.user,first_name=first_name,last_name=last_name,image=image,gender=gender,date_of_birth=birth).save()
         return redirect('profile')
 
 
