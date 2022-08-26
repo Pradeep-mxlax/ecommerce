@@ -5,13 +5,15 @@ from .forms import *
 from django.contrib.auth import authenticate,login,logout
 from .models import *
 from django.contrib import messages
+# from django.db.models.query import RawQuerySet
+# from django.db import connection
 class HomeView(View):
     """ user home page class """
     def get(self,request):
         categories = Category.objects.all()
         product_data = Product.objects.all()
         if request.user.is_authenticated:
-            cart = Cart.objects.get(user=request.user)
+            cart = Cart.objects.filter(user=request.user).first()
             cartitem = CartItem.objects.filter(cart=cart)
             if not cart:
                 Cart.objects.create(user=request.user)
@@ -98,14 +100,18 @@ class ProfileView(View):
         first_name = request.POST['first-name']
         last_name = request.POST['last-name']
         image = request.FILES.get('image')
-        # import pdb;pdb.set_trace()
         gender = request.POST['gender']
         birth = request.POST['dob']
         if image is None:
             messages.info(request, 'please add image ')
             return redirect('/profile/')
         if user_data:
-            User_More_Detail.objects.filter(user=request.user).update(first_name=first_name,last_name=last_name,image=image,gender=gender,date_of_birth=birth)
+            user_data.first_name=first_name
+            user_data.last_name=last_name
+            user_data.image=image
+            user_data.gender=gender
+            user_data.date_of_birth=birth
+            user_data.save()
         else:
             User_More_Detail(user=request.user,first_name=first_name,last_name=last_name,image=image,gender=gender,date_of_birth=birth).save()
         return redirect('profile')
@@ -118,15 +124,15 @@ class CartView(View):
         if request.user.is_authenticated:
             carts = Cart.objects.get(user=request.user)
             cartitem  = carts.cart_cartitem.all()
-            context = {
-                    'cartitem':cartitem,
-                    'cart':carts
-            }
             new_total = 0
             for data in cartitem:
                 new_total+=data.total_price
             carts.total_price = new_total
             carts.save()
+            context = {
+                    'cartitem':cartitem,
+                    'cart':carts
+            }
             return render(request, 'myapp/cart.html',context)
         else:
             return redirect('login')
@@ -195,10 +201,20 @@ class DetailView(View):
         product_data = Product.objects.get(id=kwargs['pid'])
         p = Product.objects.filter(category=product_data.category).exclude(id=kwargs['pid'])
         # print('prolfjh',p)
-        context = {
-                'categories' : categories,
-                'product_data' : product_data
-        }
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(user=request.user)
+            cartitem = CartItem.objects.filter(cart=cart)
+            context = {
+                    'categories' : categories,
+                    'product_data' : product_data,
+                    'cartitem' : cartitem,
+            }
+            return render(request, "myapp/detail.html",context)
+        else:
+            context = {
+                    'categories' : categories,
+                    'product_data' : product_data,
+            }
         return render(request, "myapp/detail.html",context)
 
 
@@ -211,11 +227,22 @@ class ShopView(View):
         sub_data = SubCategory.objects.get(id=kwargs['sid'])
         product_data= Product.objects.filter(sub_category=sub_data)
         # import pdb;pdb.set_trace()
-        context = {
-                'categories' : categories,
-                'product_data' : product_data
-        }
-        return render(request, "myapp/shop.html",context)
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(user=request.user)
+            cartitem = CartItem.objects.filter(cart=cart)
+            context = {
+                    'categories' : categories,
+                    'product_data' : product_data,
+                    'cartitem' : cartitem,
+            }
+            return render(request, "myapp/shop.html",context)
+        else:
+            context = {
+                    'categories' : categories,
+                    'product_data' : product_data,
+            }
+            return render(request, "myapp/shop.html",context)
+
 
 
 class CheckoutView(View):
@@ -322,6 +349,7 @@ class SearchView(View):
         product_data = Product.objects.filter(title__icontains=data)
         category_data = Category.objects.filter(category_name__icontains=data)
         subcategory_data = SubCategory.objects.filter(sub_cat_name__icontains=data)
+        
         print(product_data,category_data,subcategory_data)
         for prd in product_data:
             product_list.add(prd)
@@ -333,13 +361,21 @@ class SearchView(View):
         for cat in category_data:
             for data in cat.prd_cat.all():
                 product_list.add(data)
-       
-        context ={
-                'product_list':list(product_list),
-                'categories' : categories,
-
-                }
-        return render(request, "myapp/search.html",context)
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(user=request.user)
+            cartitem = CartItem.objects.filter(cart=cart)
+            context ={
+                    'product_list':list(product_list),
+                    'categories' : categories,
+                    'cartitem' : cartitem,
+                    }
+            return render(request, "myapp/search.html",context)
+        else:
+            context ={
+                    'product_list':list(product_list),
+                    'categories' : categories,
+                    }
+            return render(request, "myapp/search.html",context)
 
 class orderView(View):
    def post(self,request,*args, **kwargs):

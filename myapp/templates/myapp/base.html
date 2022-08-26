@@ -10,8 +10,8 @@
     <meta content="Free HTML Templates" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
+    <!-- <link href="img/favicon.ico" rel="icon"> -->
+    <link rel="icon"  type="image/x-icon" href="../../../media/eshoep.png">
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
@@ -130,7 +130,7 @@
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
                             <a href="/" class="nav-item nav-link active">Home</a>
-                            <a href="contact.html" class="nav-item nav-link">Contact</a>
+                            <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
                             <!-- <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Profile</a>
                                 <div class="dropdown-menu rounded-0 m-0">
