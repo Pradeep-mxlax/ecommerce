@@ -22,7 +22,7 @@ class HomeView(View):
                     'categories' : categories,
                     'product_data' : product_data,
                     'cartitem' : cartitem,
-                    # 'user' : request.user
+
             }
             return render(request, "myapp/home_detail.html",context)
         else:
@@ -199,7 +199,7 @@ class DetailView(View):
     def get(self,request,*args,**kwargs):
         categories = Category.objects.all()
         product_data = Product.objects.get(id=kwargs['pid'])
-        p = Product.objects.filter(category=product_data.category).exclude(id=kwargs['pid'])
+        # p = Product.objects.filter(category=product_data.category).exclude(id=kwargs['pid'])
         # print('prolfjh',p)
         if request.user.is_authenticated:
             cart = Cart.objects.get(user=request.user)
@@ -346,21 +346,22 @@ class SearchView(View):
         data = request.GET.get('search')
         product_list = set()
         categories = Category.objects.all()
-        product_data = Product.objects.filter(title__icontains=data)
-        category_data = Category.objects.filter(category_name__icontains=data)
+        product_data = Product.objects.filter(name__icontains=data)
+        category_data = Category.objects.filter(category_name__icontains=data).filter(category_name__istartswith=data)
+        print('caat',category_data)
         subcategory_data = SubCategory.objects.filter(sub_cat_name__icontains=data)
         
-        print(product_data,category_data,subcategory_data)
         for prd in product_data:
             product_list.add(prd)
-
+            print('product',prd)
         for sub in subcategory_data:
             for data in sub.prd_subcat.all():
                 product_list.add(data)
-
+            # print('sub',sub)
         for cat in category_data:
             for data in cat.prd_cat.all():
                 product_list.add(data)
+        #     print('caat',cat)
         if request.user.is_authenticated:
             cart = Cart.objects.get(user=request.user)
             cartitem = CartItem.objects.filter(cart=cart)
@@ -377,14 +378,52 @@ class SearchView(View):
                     }
             return render(request, "myapp/search.html",context)
 
-class orderView(View):
-   def post(self,request,*args, **kwargs):
-        product = request.POST.get('product_id')
-        address = request.POST.get('address_id')
-        return HttpResponse(f' {address} {product} sdnnb') 
 
 class DeleteAddressView(View):
     def get(self,request,*args, **kwargs):
         address_id = request.GET.get('address_id')
         Address.objects.filter(id=address_id).delete()
         return redirect('profile')
+
+
+class orderView(View):
+   def post(self,request,*args, **kwargs):
+        product_id = request.POST.get('product_id')
+        quantity = request.POST.get('quntitys_id')
+        address_id = request.POST.get('address_id')
+        payment_method = request.POST.get('payment')
+
+        address = Address.objects.get(id=address_id)
+        cart = Cart.objects.get(user=request.user)
+        if product_id:
+            product = Product.objects.filter(id=product_id).first()
+            Order(user=request.user,product=product,quantity=quantity,address=address,status='Success',payment=payment_method).save()
+            product.total_stock_unit-=int(quantity)
+            product.sold_stock_unit+=int(quantity)
+            product.save()
+        else:
+            for data in cart.cart_cartitem.all(): 
+                Order(user=request.user,product=data.product_id,quantity=data.quantity,price=data.total_price,address=address,status='Success',payment=payment_method).save()
+                data.product_id.total_stock_unit-=data.quantity
+                data.product_id.sold_stock_unit += data.quantity
+                data.product_id.save()
+            cart.cart_cartitem.all().delete()
+        return redirect('/')
+
+class OrderDetailsView(View):
+    def get(self,request,*args, **kwargs):
+        categories = Category.objects.all()
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(user=request.user)
+            cartitem = CartItem.objects.filter(cart=cart)
+            order_item = Order.objects.filter(user=request.user).order_by('-id')
+            # import pdb;pdb.set_trace()
+            context = {
+                'categories':categories,
+                'cartitem':cartitem,
+                'order_items' : order_item
+            }
+            return render(request, 'myapp/order_details.html',context)
+        else:
+            return redirect('login')
+        

@@ -34,7 +34,6 @@ class Address(models.Model):
     name = models.CharField(max_length=255)
     phone_number = PhoneNumberField()
     address1 = models.TextField()
-    # address2 = models.TextField(help_text='Enter Permanent address',null=True,blank=True)
     pin_code = models.PositiveIntegerField()
     city = models.CharField(max_length=255)
     state = models.CharField(max_length=50,default='')
@@ -81,8 +80,8 @@ class Product(models.Model):
     product_sku = models.CharField(max_length=100,unique=True)
     brand = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
-    # total_stock_unit = models.PositiveIntegerField()
-    # sold_stock_unit = models.PositiveIntegerField() 
+    total_stock_unit = models.PositiveIntegerField(default=0)
+    sold_stock_unit = models.PositiveIntegerField(default=0) 
     available_on = models.DateTimeField(auto_now_add=True,editable=True)
     update_date = models.DateTimeField(auto_now=True)
 
@@ -97,9 +96,6 @@ class Media(models.Model):
     image = models.ImageField(upload_to='images/')
     description = models.TextField()
     
-
-#snKey(Product, on_delete=models.CASCADE)
-
 
 class Cart(models.Model):
     """product cart models """
@@ -130,24 +126,32 @@ class CartItem(models.Model):
 
 class Order(models.Model):
     """ product order model"""
+    PAYMENT = [
+        ('none','none'),
+        ('cash','cash'),
+        ('debit','debit cart'),
+        ('paytm','paytm'),
+        ('bank','Bank Transfer'),
+    ]
 
     ORDER_STATUS = [    
-        ('S','success'),
-        ('W','On the way'),
-        ('P','Pending'),
-        ('F','Failed')
+        ('Success','Success'),
+        ('On the way','On the way'),
+        ('Refund','Refund'),
+        ('Failed','Failed')
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='admin_user')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='prd_order')    
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='prd_order') 
+    quantity = models.IntegerField(default=0)   
+    price = models.PositiveIntegerField(default=0)
     address = models.ForeignKey(Address, on_delete=models.CASCADE,related_name='order_address')
     order_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=2,choices=ORDER_STATUS)
+    status = models.CharField(max_length=20,choices=ORDER_STATUS)
+    payment = models.CharField(max_length=10,choices=PAYMENT,default='none')
 
-    # def __str__(self):
-    #     return self.id
 
 
 # class OrderDetails(models.Model):
-#     ordel = models.ForeignKey(to, on_delete=models.CASCADE)
+#     ordel = models.ForeignKey(Order, on_delete=models.CASCADE)
 #     product = 

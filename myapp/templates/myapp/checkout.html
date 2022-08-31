@@ -10,7 +10,7 @@
     <meta content="Free HTML Templates" name="description">
 
     <!-- Favicon -->
-    <link rel="icon"  type="image/x-icon" href="../../../media/eshoep.png">
+    <link rel="icon" type="image/x-icon" href="../../../media/eshoep.png">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -86,17 +86,12 @@
                         </div>
                     </div>
                     {% endfor %}
-                    <!-- order form start -->
-
-                    <!-- start add addredd popup -->
 
                     <!-- Button trigger modal -->
                     <div style="float: left;">
-                        <button class="btn btn-lg btn-block btn-primary  my-3 py-2" data-toggle="modal" data-target="#exampleModalLong">Add New Address
+                        <button class="btn btn-lg btn-block btn-primary  my-3 py-2" data-toggle="modal"
+                            data-target="#exampleModalLong">Add New Address
                     </div>
-                    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
-                        Launch demo modal
-                    </button> -->
 
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog"
@@ -109,37 +104,37 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">
-                                    <form action="/address/?pr_id={{prd.id}}" method="post">
-                                        {% csrf_token %}
+                                <form action="/address/?pr_id={{prd.id}}" method="post">
+                                    {% csrf_token %}
+                                    <div class="modal-body">
                                         <div class="row">
                                             <div class="col-md-6 form-group">
-                                                <input class="form-control" name='name' type="text" placeholder="Enter full name "
-                                                    required>   
+                                                <input class="form-control" name='name' type="text"
+                                                    placeholder="Enter full name " required>
                                             </div>
                                             <div class="col-md-6 form-group">
                                                 <!-- <label>Mobile No</label> -->
                                                 <input class="form-control" name="number" type="text"
-                                                    placeholder="10-digit mobile number" pattern="[789][0-9]{9}" required>
+                                                    placeholder="10-digit mobile number" pattern="[789][0-9]{9}"
+                                                    required>
                                             </div>
                                             <div class="col-md-6 form-group">
                                                 <!-- <label>Address</label> -->
-                                                <textarea name="address" style="resize:none" class="form-control" id="" cols="20"
-                                                    rows="2" placeholder="Enter order address" required></textarea>
+                                                <textarea name="address" style="resize:none" class="form-control" id=""
+                                                    cols="20" rows="2" placeholder="Enter order address"
+                                                    required></textarea>
                                                 <!-- <input class="form-control" type="text" > -->
                                             </div>
                                             <div class="col-md-6 form-group">
                                                 <!-- <label>Pincode</label> -->
-                                                <input class="form-control" name="pincode" type="number" placeholder="pincode" required>
+                                                <input class="form-control" name="pincode" type="number"
+                                                    placeholder="pincodedd" required>
                                             </div>
                                             <div class="col-md-6 form-group">
                                                 <!-- <label>City</label> -->
-                                                <input class="form-control" name="city" type="text" placeholder="Enter city" required>
+                                                <input class="form-control" name="city" type="text"
+                                                    placeholder="Enter city" required>
                                             </div>
-                                            <!-- <div class="col-md-6 form-group">
-                                                <label>State</label>
-                                                <input class="form-control" type="text" placeholder="123 Street">
-                                            </div> -->
                                             <div class="col-md-6 form-group">
                                                 <!-- <label>State</label> -->
                                                 <select class="custom-select" name="state" placeholder="State" required>
@@ -150,7 +145,8 @@
                                             </div>
                                             <div class="col-md-6 form-group">
                                                 <label>Country</label>
-                                                <select class="custom-select" name="country" aria-placeholder="Country" required>
+                                                <select class="custom-select" name="country" aria-placeholder="Country"
+                                                    required>
                                                     <option selected value="">--Select Country--</option>
                                                     <option value="India">India</option>
                                                     <option value="United States">United States</option>
@@ -160,19 +156,19 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <!-- <form> -->
-                                </div>
-                                <div class="modal-footer">
-                                    <button  class="btn btn-primary">Save changes</button>
-                                    <form>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-primary">Save changes</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                     <!-- end add addredd popup -->
-                    
-                   
+
+
                     <!-- order form end -->
 
                     {% else %}
@@ -231,7 +227,7 @@
                             <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 " type="submit">Save
                             </button>
                         </div>
-                        <form>
+                    </form>
                             {% endif %}
                 </div>
             </div>
@@ -271,40 +267,46 @@
                     <div class="card-header bg-secondary border-0">
                         <h4 class="font-weight-semi-bold m-0">Payment</h4>
                     </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="cash">
-                                <label class="custom-control-label" for="cash">Cash On Delivery</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="paypal">
-                                <label class="custom-control-label" for="paypal">Paypal</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="directcheck">
-                                <label class="custom-control-label" for="directcheck">Direct Check</label>
-                            </div>
-                        </div>
-                        <div class="">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
-                                <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
-                            </div>
-                        </div>
-                    </div>
                     <form action="/order/" method="post">
                         {% csrf_token %}
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" value="cash" name="payment"
+                                        id="cash" required>
+                                    <label class="custom-control-label" for="cash">Cash On Delivery</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" value="debit" name="payment"
+                                        id="paypal" disabled required>
+                                    <label class="custom-control-label" for="paypal">Debit Cart</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" value="paytm" name="payment"
+                                        id="directcheck" disabled required>
+                                    <label class="custom-control-label" for="directcheck">Paytm</label>
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" value="bank" name="payment"
+                                        id="banktransfer" disabled required>
+                                    <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
+                                </div>
+                            </div>
+                        </div>
+
+
                         <input type="hidden" name="address_id" id="address_id" value="">
+                        <input type="hidden" name="quntitys_id" id="quntitys_id" value="1">
                         <input type="hidden" name="product_id" id="product_id" value="{{prd.id}}">
-                        <div style=" height: 10%; float: right;">
-                            <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-2"
-                                id="place-order">Place
-                                Order</button>
+                        <div style=" height: 10%;width: 100%; float: right;">
+
+                            <input type="submit" onclick="return confirm_payment()" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-2" id="place-order" value="Place Order">
                         </div>
                     </form>
                 </div>
@@ -397,6 +399,20 @@
     <!-- Template Javascript -->
     <script src="{% static 'website/js/main.js' %}"></script>
     <script>
+
+        function confirm_payment() {
+
+            data = confirm('if you want to sure cash payment')
+            if (data) {
+                return true
+            }
+            else {
+                return false
+            }
+        }
+
+ 
+
         function radio() {
             // button disable start
             document.getElementById('place-order').disabled = true
