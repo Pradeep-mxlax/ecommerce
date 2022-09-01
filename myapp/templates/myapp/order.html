@@ -1,0 +1,67 @@
+{% extends 'myapp/base.html' %}
+{% block body %}
+{% load static %}
+<div class="container ">
+       <div style="text-align: center;">
+              <h1>My Order </h1>
+       </div>
+       {% for data in order_items %}
+       {% for item in data.carts.all %}
+       <div style="box-shadow: 5px 5px 5px 5px rgb(233, 224, 224);width: 100%;"
+              class="border border-light d-flex justify-content-around align-items-center p-3 mt-5 bg-secondary">
+              <img src="../../../media/{{item.product_id.media_prd.all.first.image.name}}" class=" mt-2 mb-2"
+                     width="100" alt="">
+              <p style="text-overflow: ellipsis; white-space: nowrap; overflow : hidden; width: 350px;" class="ml-4"><a
+                            href="/orders_details/?order_id={{data.id}}" title="{{data.title}}"
+                            class=" text-decoration-none  text-dark font-weight-semi m-0">{{item.product_id.title}} </a>
+              </p>
+              <h6>quantity :- {{item.quantity}}</h6>
+              <h4>₹{{item.total_price}}</h4>
+              <h5>{{data.status}}</h5>
+       </div>
+       <!-- Modal -->
+       <!-- <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+              aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                     <div class="modal-content">
+                            <div class="modal-header">
+                                   <h5 class="modal-title" id="exampleModalLongTitle">Order Details</h5>
+                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                   </button>
+                            </div>
+                            <div class="modal-body">
+                                   <div>
+                                          <h4>Delivery Adress</h4>
+                                          <hr>
+                                          <h6>{{data.address.address1}}</h6>
+                                          <h6>{{data.address.city}}  {{data.address.state}} {{data.address.pin_code}}</h6>
+                                          <h6>Phone number -  {{data.address.phone_number}}</h6>
+                                   </div>
+                            </div> -->
+                            <!-- <div class="modal-footer">
+                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                   <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+</div>
+</div>
+</div> -->
+{% endfor %}
+{% endfor %}
+<!-- Button trigger modal -->
+<!-- <button type="button" class="btn btn-primary">
+              Launch demo modal
+       </button> -->
+
+
+<!-- <div style="box-shadow: 5px 5px 5px 5px rgb(233, 224, 224);width: 100%;" class="border border-light d-flex justify-content-around align-items-center p-3 mt-5 bg-secondary"   >
+              
+                     <img src="../../../media/images/nokia1.jpg" class=" mt-2 mb-2" width="100" alt="">
+                     <p style="text-overflow: ellipsis; white-space: nowrap; overflow : hidden; width: 350px;" class="ml-4"><a
+                            href="" title="{{data.title}}"
+                            class=" text-decoration-none  text-dark font-weight-semi m-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, magnam eligendi. Culpa est similique ratione ut facilis repudiandae voluptates. Voluptatibus ex vero ea distinctio autem maiores repellendus qui voluptatem perspiciatis. </a></p>
+                     <h4>₹40089</h4>
+                     <h5>order success</h5>
+       </div> -->
+</div>
+{% endblock body %}

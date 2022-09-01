@@ -151,7 +151,7 @@
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href="{% url 'profile' %}" class="dropdown-item">User Profile</a>
                                     <a href="{% url 'loguot' %}" class="dropdown-item">Logout</a>
-                                    <a href="{% url 'order_details' %}" class="dropdown-item">Order</a>
+                                    <a href="{% url 'orders' %}" class="dropdown-item">Order</a>
                                 </div>
                             </div>
                             <!-- <div  class="nav-item "> Login <a href="{% url 'profile' %}" class="text-info"> {{user.username}}</a> </div> -->
@@ -200,7 +200,7 @@
     {% block body %}
     {% endblock body %}
     <div class="container-fluid bg-secondary text-dark mt-5 pt-5">
-        <div class="row px-xl-5 pt-5">
+        <div class="row px-xl-5 pt-5 d-flex justify-content-around ">
             <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
                 <a href="" class="text-decoration-none">
                     <h1 class="mb-4 display-5 font-weight-semi-bold"><span
@@ -212,7 +212,7 @@
                 <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
                 <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
             </div>
-            <div class="col-lg-8 col-md-12 ">
+            <div class="col-lg-4 col-md-12 ">
                 <div class="row">
                     <div class="col-md-5 mb-5 ml-2" >
                         <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
@@ -224,7 +224,7 @@
                                 Us</a>
                         </div>
                     </div>
-                    <div class="col-md-5 mb-5">
+                    <!-- <div class="col-md-5 mb-5">
                         <h5 class="font-weight-bold text-dark mb-4">Newsletter</h5>
                         <form action="">
                             <div class="form-group">
@@ -240,7 +240,7 @@
                                     Now</button>
                             </div>
                         </form>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

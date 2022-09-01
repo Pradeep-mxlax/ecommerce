@@ -35,7 +35,7 @@ class CartItemAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['user','product','order_date']
+    list_display = ['user','order_date']
 
 
 

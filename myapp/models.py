@@ -141,7 +141,8 @@ class Order(models.Model):
         ('Failed','Failed')
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='admin_user')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='prd_order') 
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='prd_order',null=True,blank=True) 
+    carts = models.ManyToManyField(CartItem,null=True,blank=True) 
     quantity = models.IntegerField(default=0)   
     price = models.PositiveIntegerField(default=0)
     address = models.ForeignKey(Address, on_delete=models.CASCADE,related_name='order_address')
@@ -152,6 +153,6 @@ class Order(models.Model):
 
 
 
-# class OrderDetails(models.Model):
-#     ordel = models.ForeignKey(Order, on_delete=models.CASCADE)
-#     product = 
+    # class OrderDetails(models.Model):
+    #     orders = models.models.ManyToManyField(Order)
+    

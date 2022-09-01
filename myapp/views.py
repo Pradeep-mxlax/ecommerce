@@ -14,7 +14,7 @@ class HomeView(View):
         product_data = Product.objects.all()
         if request.user.is_authenticated:
             cart = Cart.objects.filter(user=request.user).first()
-            cartitem = CartItem.objects.filter(cart=cart)
+            cartitem = CartItem.objects.filter(cart=cart,payed='False')
             if not cart:
                 Cart.objects.create(user=request.user)
         
@@ -123,7 +123,7 @@ class CartView(View):
 
         if request.user.is_authenticated:
             carts = Cart.objects.get(user=request.user)
-            cartitem  = carts.cart_cartitem.all()
+            cartitem  = carts.cart_cartitem.filter(payed='False')
             new_total = 0
             for data in cartitem:
                 new_total+=data.total_price
@@ -141,7 +141,7 @@ class CartView(View):
         quntity = request.POST.get('quantity')
         button_type = request.POST.get('type')
         product_id = request.POST.get('product')
-        cartitem = CartItem.objects.get(product_id=product_id,cart=carts)
+        cartitem = CartItem.objects.get(product_id=product_id,cart=carts,payed='False')
         product_price = Product.objects.get(id=product_id)
         if button_type == 'plus':
             cartitem.quantity+=1
@@ -167,7 +167,7 @@ class CartItemView(View):
             prduct_id = request.POST.get('prduct_id')
             product = Product.objects.get(id=prduct_id)
             carts = Cart.objects.get(user=request.user)
-            available_product =carts.cart_cartitem.filter(product_id=prduct_id)
+            available_product =carts.cart_cartitem.filter(product_id=prduct_id,payed='False')
             if not available_product :
                 CartItem.objects.create(product_id=product,cart=carts,total_price=product.price)
 
@@ -203,7 +203,7 @@ class DetailView(View):
         # print('prolfjh',p)
         if request.user.is_authenticated:
             cart = Cart.objects.get(user=request.user)
-            cartitem = CartItem.objects.filter(cart=cart)
+            cartitem = CartItem.objects.filter(cart=cart,payed='False')
             context = {
                     'categories' : categories,
                     'product_data' : product_data,
@@ -229,7 +229,7 @@ class ShopView(View):
         # import pdb;pdb.set_trace()
         if request.user.is_authenticated:
             cart = Cart.objects.get(user=request.user)
-            cartitem = CartItem.objects.filter(cart=cart)
+            cartitem = CartItem.objects.filter(cart=cart,payed='False')
             context = {
                     'categories' : categories,
                     'product_data' : product_data,
@@ -252,6 +252,7 @@ class CheckoutView(View):
         if request.user.is_authenticated:
             product_id = request.GET.get('pr_id')
             address = Address.objects.filter(user=request.user)
+            carts = Cart.objects.get(user=request.user)
             if product_id:
                 product_data = Product.objects.get(id=product_id)
                 context = {
@@ -260,8 +261,8 @@ class CheckoutView(View):
                 }
                 return render(request, "myapp/checkout.html",context)
             else:
-                cart = Cart.objects.get(user=request.user)
-                cartitem = cart.cart_cartitem.all()
+                cartitem = CartItem.objects.filter(cart=cart,payed='False')
+                # import pdb;pdb.set_trace()
                 context = {
                             'cart':cart,
                             'cartitem':cartitem,
@@ -276,18 +277,22 @@ class CheckoutView(View):
         if request.user.is_authenticated:
             product_id = request.GET.get('pr_id')
             address = Address.objects.filter(user=request.user).order_by('-id')
+            carts = Cart.objects.get(user=request.user)
             if product_id:
+                available_product =carts.cart_cartitem.filter(product_id=product_id)
                 product_data = Product.objects.get(id=product_id)
+                if not available_product :
+                    CartItem.objects.create(product_id=product_data,cart=carts,total_price=product_data.price)
                 context = {
                             'prd':product_data,
                             'address' : address
                 }
                 return render(request, "myapp/checkout.html",context)
             else:
-                cart = Cart.objects.get(user=request.user)
-                cartitem = cart.cart_cartitem.all()
+                
+                cartitem = CartItem.objects.filter(cart=carts,payed='False')
                 context = {
-                            'cart':cart,
+                            'cart':carts,
                             'cartitem':cartitem,
                             'address' : address
                 }
@@ -386,7 +391,7 @@ class DeleteAddressView(View):
         return redirect('profile')
 
 
-class orderView(View):
+class orderPlaceView(View):
    def post(self,request,*args, **kwargs):
         product_id = request.POST.get('product_id')
         quantity = request.POST.get('quntitys_id')
@@ -395,35 +400,51 @@ class orderView(View):
 
         address = Address.objects.get(id=address_id)
         cart = Cart.objects.get(user=request.user)
+        orders = Order(user=request.user,address=address,status='Success',payment=payment_method)
+        orders.save()
         if product_id:
-            product = Product.objects.filter(id=product_id).first()
-            Order(user=request.user,product=product,quantity=quantity,address=address,status='Success',payment=payment_method).save()
-            product.total_stock_unit-=int(quantity)
-            product.sold_stock_unit+=int(quantity)
-            product.save()
+            product = Product.objects.get(id=product_id)
+            cartitem = cart.cart_cartitem.get(product_id=product,payed='False')
+            orders.carts.add(cartitem)
+            cartitem.product_id.total_stock_unit-=int(quantity)
+            cartitem.product_id.sold_stock_unit+=int(quantity)
+            cartitem.product_id.save()
+            cartitem.payed='True'
+            cartitem.save()
         else:
-            for data in cart.cart_cartitem.all(): 
-                Order(user=request.user,product=data.product_id,quantity=data.quantity,price=data.total_price,address=address,status='Success',payment=payment_method).save()
+            for data in cart.cart_cartitem.filter(payed='False'):
+                orders.carts.add(data) 
                 data.product_id.total_stock_unit-=data.quantity
                 data.product_id.sold_stock_unit += data.quantity
-                data.product_id.save()
-            cart.cart_cartitem.all().delete()
+                data.payed='True'
+                data.save()
         return redirect('/')
 
-class OrderDetailsView(View):
+class OrderView(View):
     def get(self,request,*args, **kwargs):
         categories = Category.objects.all()
         if request.user.is_authenticated:
             cart = Cart.objects.get(user=request.user)
-            cartitem = CartItem.objects.filter(cart=cart)
+            cartitem = CartItem.objects.filter(cart=cart,payed="False")
             order_item = Order.objects.filter(user=request.user).order_by('-id')
-            # import pdb;pdb.set_trace()
             context = {
                 'categories':categories,
                 'cartitem':cartitem,
                 'order_items' : order_item
             }
-            return render(request, 'myapp/order_details.html',context)
+            return render(request, 'myapp/order.html',context)
         else:
             return redirect('login')
         
+class OrderDetailsView(View):
+    def get(self,request,*args, **kwargs):
+        order_id = request.GET.get('order_id')
+        categories = Category.objects.all()
+        order_item = Order.objects.filter(id=order_id)
+
+        print(order_id)
+        context = {
+                    'categories' : categories,
+                    'order_items' : order_item,
+            }
+        return render(request, 'myapp/order_details.html',context)
