@@ -381,10 +381,19 @@ class orderView(View):
    def post(self,request,*args, **kwargs):
         product = request.POST.get('product_id')
         address = request.POST.get('address_id')
-        return HttpResponse(f' {address} {product} sdnnb') 
+        return HttpResponse(f' {address} {product} data') 
+        
 
 class DeleteAddressView(View):
     def get(self,request,*args, **kwargs):
         address_id = request.GET.get('address_id')
         Address.objects.filter(id=address_id).delete()
         return redirect('profile')
+
+
+class RatingView(View):
+    def get(self,request,*args, **kwargs):
+        return render(request, 'myapp/rating.html')
+    def post(self,request,*args, **kwargs):
+        rating = request.POST.get('rate')
+        return HttpResponse(rating)

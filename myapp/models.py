@@ -147,7 +147,11 @@ class Order(models.Model):
     # def __str__(self):
     #     return self.id
 
+class ProductRating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='users')
+    product = models.ForeignKey(User, on_delete=models.CASCADE,related_name='prd_rating')
+    rating = models.IntegerField()
 
-# class OrderDetails(models.Model):
-#     ordel = models.ForeignKey(to, on_delete=models.CASCADE)
-#     product = 
+    def __str__(self):
+        return self.product.name
+    

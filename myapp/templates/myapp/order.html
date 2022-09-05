@@ -1,0 +1,27 @@
+{% extends 'myapp/base.html' %}
+{% block body %}
+{% load static %}
+<div class="container ">
+       <div style="text-align: center;">
+              <h1>My Order </h1>
+       </div>
+       {% for data in order_items %}
+       {% for item in data.carts.all %}
+       <div style="box-shadow: 5px 5px 5px 5px rgb(233, 224, 224);width: 100%;"
+              class="border border-light d-flex justify-content-around align-items-center p-3 mt-5 bg-secondary">
+              <img src="../../../media/{{item.product_id.media_prd.all.first.image.name}}" class=" mt-2 mb-2"
+                     width="100" alt="">
+              <p style="text-overflow: ellipsis; white-space: nowrap; overflow : hidden; width: 350px;" class="ml-4"><a
+                            href="/orders_details/?order_id={{data.id}}" title="{{data.title}}"
+                            class=" text-decoration-none  text-dark font-weight-semi m-0">{{item.product_id.title}} </a>
+              </p>
+              <h6>quantity :- {{item.quantity}}</h6>
+              <h4>₹{{item.total_price}}</h4>
+              <h5>{{data.status}}</h5>
+       </div>
+
+       {% endfor %}
+       {% endfor %}
+
+</div>
+{% endblock body %}
