@@ -9,7 +9,6 @@ urlpatterns = [
     path('login/',views.LoginView.as_view(),name='login'),
     path('loguot/',views.loguotView.as_view(),name='loguot'),
     path('profile/',views.ProfileView.as_view(),name='profile'),
-    # path('profileupdate/',views.User_More_DetailUpdateView.as_view(),name='profileupdate'),
     path('cart/',views.CartView.as_view(),name='cart'),
     path('checkout/',views.CheckoutView.as_view(),name='checkout'),
     path('detail/<int:pid>',views.DetailView.as_view(),name='detail'),
@@ -24,5 +23,6 @@ urlpatterns = [
     path('order_place/',views.orderPlaceView.as_view(),name='order_place'),
     path('orders/',views.OrderView.as_view(),name='orders'),
     path('orders_details/',views.OrderDetailsView.as_view(),name='orders_details'),
+    path('offers/',views.OfferView.as_view(),name='offers'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

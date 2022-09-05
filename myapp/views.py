@@ -144,10 +144,15 @@ class CartView(View):
         cartitem = CartItem.objects.get(product_id=product_id,cart=carts,payed='False')
         product_price = Product.objects.get(id=product_id)
         if button_type == 'plus':
-            cartitem.quantity+=1
-            cartitem.total_price = cartitem.new_total_price
-            cartitem.save()
-
+            if int(quntity) < product_price.total_stock_unit:
+                if int(quntity) < 5:
+                    cartitem.quantity+=1
+                    cartitem.total_price = cartitem.new_total_price
+                    cartitem.save()
+                messages.info(request, "We're sorry! Only 5 units allowed in each order")
+                return redirect('cart')
+            messages.info(request, "We're sorry! No more availlabe stock of this product  ")
+            return redirect('cart')
         elif button_type == 'minus':
             if cartitem.quantity > 1:
                 cartitem.quantity-=1
@@ -351,9 +356,9 @@ class SearchView(View):
         data = request.GET.get('search')
         product_list = set()
         categories = Category.objects.all()
-        product_data = Product.objects.filter(name__icontains=data)
+        product_data = Product.objects.filter(title__icontains=data)
         category_data = Category.objects.filter(category_name__icontains=data).filter(category_name__istartswith=data)
-        print('caat',category_data)
+
         subcategory_data = SubCategory.objects.filter(sub_cat_name__icontains=data)
         
         for prd in product_data:
@@ -362,14 +367,14 @@ class SearchView(View):
         for sub in subcategory_data:
             for data in sub.prd_subcat.all():
                 product_list.add(data)
-            # print('sub',sub)
+            print('sub',sub)
         for cat in category_data:
             for data in cat.prd_cat.all():
                 product_list.add(data)
-        #     print('caat',cat)
+            print('caat',cat) 
         if request.user.is_authenticated:
             cart = Cart.objects.get(user=request.user)
-            cartitem = CartItem.objects.filter(cart=cart)
+            cartitem = CartItem.objects.filter(cart=cart,payed='False')
             context ={
                     'product_list':list(product_list),
                     'categories' : categories,
@@ -448,3 +453,13 @@ class OrderDetailsView(View):
                     'order_items' : order_item,
             }
         return render(request, 'myapp/order_details.html',context)
+
+class OfferView(View):
+    def get(self,request,*args, **kwargs):
+        offers = Offer.objects.all()
+        categories = Category.objects.all()
+        context = {
+                'offers':offers,
+                'categories':categories
+        }
+        return render(request, 'myapp/offer.html',context)

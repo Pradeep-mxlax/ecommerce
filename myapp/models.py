@@ -142,7 +142,7 @@ class Order(models.Model):
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='admin_user')
     product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='prd_order',null=True,blank=True) 
-    carts = models.ManyToManyField(CartItem,null=True,blank=True) 
+    carts = models.ManyToManyField(CartItem) 
     quantity = models.IntegerField(default=0)   
     price = models.PositiveIntegerField(default=0)
     address = models.ForeignKey(Address, on_delete=models.CASCADE,related_name='order_address')
@@ -152,7 +152,21 @@ class Order(models.Model):
     payment = models.CharField(max_length=10,choices=PAYMENT,default='none')
 
 
+class Offer(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE,null=True,blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True,blank=True)
+    coupon_code = models.CharField(max_length=15)
+    discount_value = models.IntegerField()
+    discount_price = models.IntegerField()
+    discount_title = models.CharField(max_length=50,null=True,blank=True)
+    condition = models.TextField()
+    apply_to = models.BooleanField(default=False)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
 
-    # class OrderDetails(models.Model):
-    #     orders = models.models.ManyToManyField(Order)
+    def __str__(self):
+        return self.coupon_code
     
+# This offer is valid until stocks last or till the offer ends.
+# Final Price is inclusive of the offer.
+# Get extra ₹500 off on 1 items

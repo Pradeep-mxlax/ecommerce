@@ -2,6 +2,7 @@ from django.contrib import admin
 from myapp.models import *
 # Register your models here.
 admin.site.register(User_More_Detail)
+
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
     list_display = ['name','city','phone_number','address1','state',]  
@@ -17,7 +18,7 @@ class SubCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['category','sub_category','name','price','product_sku']
+    list_display = ['category','sub_category','name','price','product_sku','total_stock_unit']
 
 @admin.register(Media)
 class MediaAdmin(admin.ModelAdmin):
@@ -37,7 +38,8 @@ class CartItemAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['user','order_date']
 
-
-
+@admin.register(Offer)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['coupon_code','discount_title','discount_price','discount_value','start_date','end_date']
 
 
