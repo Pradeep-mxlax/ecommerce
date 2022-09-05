@@ -20,9 +20,14 @@ urlpatterns = [
     path('editaddress/',views.editAddress,name='editaddress'),
     path('delete_address/',views.DeleteAddressView.as_view(),name='delete_address'),
     path('search/',views.SearchView.as_view(),name='search'),   
+<<<<<<< HEAD
     path('order_place/',views.orderPlaceView.as_view(),name='order_place'),
     path('orders/',views.OrderView.as_view(),name='orders'),
     path('orders_details/',views.OrderDetailsView.as_view(),name='orders_details'),
     path('offers/',views.OfferView.as_view(),name='offers'),
+=======
+    path('order/',views.orderView.as_view(),name='order'),
+    path('rating/',views.RatingView.as_view(),name='rating'),
+>>>>>>> 39ff73b46492fbc12610748da3c70abe88245bf1
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
