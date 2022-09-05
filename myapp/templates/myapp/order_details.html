@@ -6,15 +6,24 @@
        <div style="text-align: center;">
               <h1>My Order </h1>
        </div>
-       <div class="d-flex justify-content-around border border-gray p-3 " >
+       <div class="address border border-info  ">
+              <h3 class="text-align ml-4" >Delivery Address</h3>
+              <hr class="bg-info">
+              <div class="ml-5">
+                     <h6>{{order_items.address.name}}</h6>
+                     <h6>{{order_items.address.city}}</h6>
+                     <h6>{{order_items.address.address1}} {{order_items.address.state}} {{order_items.address.pin_code}} </h6>
+                     <h6> Phone Number  {{order_items.address.phone_number}}</h6>
+              </div>
+       </div>
+       <div class="d-flex justify-content-around border border-info p-3 mt-3 " >
               <h5>product</h5>
               <h5>Quantity</h5>
               <h5>Price</h5>
               <h5> Payment Status</h5>
               <h5> Order Date</h5>
        </div>
-       {% for data in order_items %}
-       {% for item in data.carts.all %}
+       {% for item in order_items.carts.all %}
 
        <div style="box-shadow: 5px 5px 5px 5px rgb(233, 224, 224);width: 100%; height: 250px;"
               class="border border-light d-flex justify-content-between align-items-center p-3 mt-5 bg-secondary">
@@ -33,8 +42,8 @@
              
                      <h4>₹{{item.total_price}}</h4>
               
-                     <h5>{{data.status}}</h5>
-                     <h5>{{data.order_date}}</h5>
+                     <h5>{{order_items.status}}</h5>
+                     <h5>{{order_items.order_date}}</h5>
            
 
 
@@ -42,7 +51,7 @@
        </div>
 
        {% endfor %}
-       {% endfor %}
+
 
 </div>
 {% endblock body %}

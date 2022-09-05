@@ -18,7 +18,7 @@ class SubCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['category','sub_category','name','price','product_sku','total_stock_unit']
+    list_display = ['category','sub_category','name','price','product_sku','total_stock_unit','sold_stock_unit']
 
 @admin.register(Media)
 class MediaAdmin(admin.ModelAdmin):
@@ -43,3 +43,6 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['coupon_code','discount_title','discount_price','discount_value','start_date','end_date']
 
 
+@admin.register(ProductRating)
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ['user','product','rating']

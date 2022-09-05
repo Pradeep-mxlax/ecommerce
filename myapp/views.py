@@ -256,7 +256,7 @@ class CheckoutView(View):
     def get(self,request,*args,**kwargs):
         if request.user.is_authenticated:
             product_id = request.GET.get('pr_id')
-            address = Address.objects.filter(user=request.user)
+            address = Address.objects.filter(user=request.user).order_by('-id')
             carts = Cart.objects.get(user=request.user)
             if product_id:
                 product_data = Product.objects.get(id=product_id)
@@ -284,7 +284,7 @@ class CheckoutView(View):
             address = Address.objects.filter(user=request.user).order_by('-id')
             carts = Cart.objects.get(user=request.user)
             if product_id:
-                available_product =carts.cart_cartitem.filter(product_id=product_id)
+                available_product =carts.cart_cartitem.filter(product_id=product_id,payed='False')
                 product_data = Product.objects.get(id=product_id)
                 if not available_product :
                     CartItem.objects.create(product_id=product_data,cart=carts,total_price=product_data.price)
@@ -406,7 +406,7 @@ class DeleteAddressView(View):
 class orderPlaceView(View):
    def post(self,request,*args, **kwargs):
         product_id = request.POST.get('product_id')
-        quantity = request.POST.get('quntitys_id')
+        # quantity = request.POST.get('quntitys_id')
         address_id = request.POST.get('address_id')
         payment_method = request.POST.get('payment')
 
@@ -418,19 +418,21 @@ class orderPlaceView(View):
             product = Product.objects.get(id=product_id)
             cartitem = cart.cart_cartitem.get(product_id=product,payed='False')
             orders.carts.add(cartitem)
-            cartitem.product_id.total_stock_unit-=int(quantity)
-            cartitem.product_id.sold_stock_unit+=int(quantity)
+            cartitem.product_id.total_stock_unit-=int(cartitem.quantity)
+            cartitem.product_id.sold_stock_unit+=int(cartitem.quantity)
             cartitem.product_id.save()
             cartitem.payed='True'
             cartitem.save()
         else:
             for data in cart.cart_cartitem.filter(payed='False'):
                 orders.carts.add(data) 
-                data.product_id.total_stock_unit-=data.quantity
-                data.product_id.sold_stock_unit += data.quantity
+                # import pdb;pdb.set_trace()
+                data.product_id.total_stock_unit-=int(data.quantity)
+                data.product_id.sold_stock_unit += int(data.quantity)
+                data.product_id.save()
                 data.payed='True'
                 data.save()
-        return redirect('/')
+        return redirect('orders')
 
 class OrderView(View):
     def get(self,request,*args, **kwargs):
@@ -452,12 +454,13 @@ class OrderDetailsView(View):
     def get(self,request,*args, **kwargs):
         order_id = request.GET.get('order_id')
         categories = Category.objects.all()
-        order_item = Order.objects.filter(id=order_id)
-
-        print(order_id)
+        order_item = Order.objects.get(id=order_id)
+        cart = Cart.objects.get(user=request.user)
+        cartitem = CartItem.objects.filter(cart=cart,payed="False")
         context = {
                     'categories' : categories,
                     'order_items' : order_item,
+                    'cartitem':cartitem,
             }
         return render(request, 'myapp/order_details.html',context)
 
