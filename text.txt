@@ -1,0 +1,51 @@
+# class Offer(models.Model):
+#     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE )
+#     coupon_code = models.CharField(max_length=15)
+#     discount_value = models.IntegerField()
+#     discount_price = models.IntegerField()
+#     discount_title = models.CharField(max_length=50,null=True,blank=True)
+#     condition = models.TextField()
+#     apply_to = models.BooleanField(default=False)
+#     start_date = models.DateTimeField()
+#     end_date = models.DateTimeField()
+
+#     def __str__(self):
+#         return self.coupon_code
+
+# {% extends 'myapp/base.html' %}
+# {% load static %}
+# {% block body %}
+# <div class="container">
+#        <div class="text-center ">
+#               <h2>Available Offers</h2>
+#        </div>
+#        <div class="border border-primary border bg-secondary ">
+#               {% for data in offers %}
+#               <div class="border-bottom border-primary p-4 d-flex justify-content-between">
+
+#                      <h5 class="text-warning">{{data.discount_title}}</h5>
+#                      <p class="text-warning" > Valid till {{data.end_date}}</p>
+#                      <p data-toggle="collapse" href="#collapseExample{{data.id}}" role="button" aria-expanded="false"
+#                             aria-controls="collapseExample" class="text-warning"> View T&C</p>
+
+                     
+#               </div>
+#                      <div class="collapse border-bottom border-primary"  id="collapseExample{{data.id}}" style="font-size: 12px;">
+#                             <div style="width: 300px;">
+#                                     <p >{{data.condition|linebreaks}}</p>
+#                             </div>
+#                      </div>
+#               {% endfor %}
+#        </div>
+# </div>
+# {% endblock body %}
+class OfferView(View):
+    def get(self,request,*args, **kwargs):
+        offers = Offer.objects.all()
+        categories = Category.objects.all()
+        context = {
+                'offers':offers,
+                'categories':categories
+        }
+        return render(request, 'myapp/offer.html',context)

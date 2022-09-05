@@ -149,6 +149,7 @@ class CartView(View):
                     cartitem.quantity+=1
                     cartitem.total_price = cartitem.new_total_price
                     cartitem.save()
+                    return redirect('cart')
                 messages.info(request, "We're sorry! Only 5 units allowed in each order")
                 return redirect('cart')
             messages.info(request, "We're sorry! No more availlabe stock of this product  ")
@@ -307,13 +308,13 @@ class CheckoutView(View):
 
 
 class ContactView(TemplateView):
-    """ user product checkout class """
+    """ user product contact class """
 
     template_name = "myapp/contact.html"
 
 
 class AddressView(View):
-    """ user product checkout class """
+    """ user add address  class """
 
     def post(self,request,*args, **kwargs):
         # import pdb;pdb.set_trace()
@@ -386,14 +387,7 @@ class SearchView(View):
                     'product_list':list(product_list),
                     'categories' : categories,
                     }
-            return render(request, "myapp/search.html",context)
-
-
-# class orderView(View):
-#    def post(self,request,*args, **kwargs):
-#         product = request.POST.get('product_id')
-#         address = request.POST.get('address_id')
-#         return HttpResponse(f' {address} {product} data') 
+            return render(request, "myapp/search.html",context) 
         
 
 class DeleteAddressView(View):
@@ -424,15 +418,16 @@ class orderPlaceView(View):
             cartitem.payed='True'
             cartitem.save()
         else:
-            for data in cart.cart_cartitem.filter(payed='False'):
+            cartitem = cart.cart_cartitem.filter(payed='False')
+            for data in cartitem:
                 orders.carts.add(data) 
-                # import pdb;pdb.set_trace()
                 data.product_id.total_stock_unit-=int(data.quantity)
                 data.product_id.sold_stock_unit += int(data.quantity)
                 data.product_id.save()
                 data.payed='True'
                 data.save()
-        return redirect('orders')
+        # import pdb;pdb.set_trace()
+        return redirect(f'/rating/?orders_id={orders.id}')
 
 class OrderView(View):
     def get(self,request,*args, **kwargs):
@@ -464,20 +459,19 @@ class OrderDetailsView(View):
             }
         return render(request, 'myapp/order_details.html',context)
 
-class OfferView(View):
-    def get(self,request,*args, **kwargs):
-        offers = Offer.objects.all()
-        categories = Category.objects.all()
-        context = {
-                'offers':offers,
-                'categories':categories
-        }
-        return render(request, 'myapp/offer.html',context)
+
 
 class RatingView(View):
     def get(self,request,*args, **kwargs):
-        return render(request, 'myapp/rating.html')
+        orders_id = request.GET.get('orders_id')
+        return render(request, 'myapp/rating.html',{'orders_id':orders_id})
     def post(self,request,*args, **kwargs):
         rating = request.POST.get('rate')
-        return HttpResponse(rating)
+        order_id  = request.POST.get('orders_id')
+        data = Order.objects.filter(id=order_id).first()
+        for i in data.carts.all():
+            # import pdb;pdb.set_trace()
+            ProductRating(user=request.user,product=i.product_id,rating=rating).save()
+            
+        return HttpResponse(f'{order_id}')
 

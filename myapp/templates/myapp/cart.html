@@ -10,7 +10,7 @@
     <meta content="Free HTML Templates" name="description">
 
     <!-- Favicon -->
-    <link rel="icon"  type="image/x-icon" href="../../../media/eshoep.png">
+    <link rel="icon" type="image/x-icon" href="../../../media/eshoep.png">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -29,7 +29,7 @@
 </head>
 
 <body>
-  
+
 
 
     <!-- Page Header Start -->
@@ -48,15 +48,16 @@
     {% if messages %}
     {% for message in messages %}
     <div class="alert alert-dark alert-dismissible fade show" role="alert">
-        <strong>{{message}}</strong> 
+        <strong>{{message}}</strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+            <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      {% endfor  %}
-      {% endif  %}
+    </div>
+    {% endfor %}
+    {% endif %}
     <!-- Cart Start -->
     <div class="container-fluid pt-5">
+        {% if cartitem %}
         <div class="row px-xl-5">
             <div class="col-lg-8  mb-5">
 
@@ -86,16 +87,16 @@
                                                                 class="fas fa-angle-down mt-1"></i></a></p>
                                                 </div> -->
                                             </div>
+
                                             {% for i in cartitem %}
                                             <div class="card mb-3">
                                                 <div class="card-body">
                                                     <div class="d-flex justify-content-between">
                                                         <div class="d-flex flex-row align-items-center">
-                                                         
 
-                                                                <img src="../../../media/{{i.product_id.media_prd.first.image}}"
-                                                                    class="img-fluid rounded-3" alt="Shopping item"
-                                                                    >
+
+                                                            <img src="../../../media/{{i.product_id.media_prd.first.image}}"
+                                                                class="img-fluid rounded-3" alt="Shopping item">
 
                                                             <div class="ms-4 ml-4">
                                                                 <h6>{{i.product_id.title}}</h6>
@@ -107,7 +108,8 @@
                                                                     id="hid{{i.product_id.id}}">
                                                                 <div class="input-group quanxsftity mx-auto "
                                                                     style="width: 100px;">
-                                                                    <form action="/cart/" method="post" class="d-flex flex-row align-items-center">
+                                                                    <form action="/cart/" method="post"
+                                                                        class="d-flex flex-row align-items-center">
                                                                         {% csrf_token %}
                                                                         <div class="input-group-btn">
                                                                             <button value="minus" name="type"
@@ -190,12 +192,31 @@
                         <form action="/checkout/" method="post">
                             {% csrf_token %}
 
-                            <button  class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
+                            <button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+        {% else %}
+        <div>
+            <div class="Vy94J0 d-flex justify-content-center">
+                <div>
+
+                    <img src="https://rukminim1.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png?q=90"
+                        class="_2giOt4" style="width: 222px;height: 162px;">
+                    <div class="_1LCJ1U mt-2">
+                        <h4>Your cart is empty!</h4>
+                    </div>
+                    <div class="text-center">
+                        <h6>Add items to it now.</h6>
+                    </div>
+                    <a href="/" class="btn btn-info ml-5" ><span>Shop
+                            now</span></a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
     <!-- Cart End -->
 
@@ -232,7 +253,7 @@
                                 Us</a>
                         </div>
                     </div> -->
-                    <div class="col-md-5 mb-5 ml-2" >
+                    <div class="col-md-5 mb-5 ml-2">
                         <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
                         <div class="d-flex flex-column justify-content-start">
                             <a class="text-dark mb-2" href="/"><i class="fa fa-angle-right mr-2"></i>Home</a>
@@ -252,12 +273,10 @@
                         <h5 class="font-weight-bold text-dark mb-4">Newsletter</h5>
                         <form action="">
                             <div class="form-group">
-                                <input type="text" class="form-control border-0 py-4" placeholder="Your Name"
-                                     />
+                                <input type="text" class="form-control border-0 py-4" placeholder="Your Name" />
                             </div>
                             <div class="form-group">
-                                <input type="email" class="form-control border-0 py-4" placeholder="Your Email"
-                                     />
+                                <input type="email" class="form-control border-0 py-4" placeholder="Your Email" />
                             </div>
                             <div>
                                 <button class="btn btn-primary btn-block border-0 py-3" type="submit">Subscribe
@@ -268,7 +287,7 @@
                 </div>
             </div>
         </div>
-      
+
         <div class="row border-top border-light mx-xl-5 py-4">
             <div class="col-md-6 px-xl-0">
                 <p class="mb-md-0 text-center text-md-left text-dark">

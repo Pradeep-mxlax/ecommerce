@@ -7,51 +7,60 @@
               <h1>My Order </h1>
        </div>
        <div class="address border border-info  ">
-              <h3 class="text-align ml-4" >Delivery Address</h3>
+              <h3 class="text-align ml-4">Delivery Address</h3>
               <hr class="bg-info">
               <div class="ml-5">
                      <h6>{{order_items.address.name}}</h6>
                      <h6>{{order_items.address.city}}</h6>
-                     <h6>{{order_items.address.address1}} {{order_items.address.state}} {{order_items.address.pin_code}} </h6>
-                     <h6> Phone Number  {{order_items.address.phone_number}}</h6>
+                     <h6>{{order_items.address.address1}} {{order_items.address.state}} {{order_items.address.pin_code}}
+                     </h6>
+                     <h6> Phone Number {{order_items.address.phone_number}}</h6>
               </div>
        </div>
-       <div class="d-flex justify-content-around border border-info p-3 mt-3 " >
+       <!-- <div class="d-flex justify-content-around border border-info p-3 mt-3 " >
               <h5>product</h5>
               <h5>Quantity</h5>
               <h5>Price</h5>
               <h5> Payment Status</h5>
               <h5> Order Date</h5>
-       </div>
-       {% for item in order_items.carts.all %}
+       </div> -->
+       <!-- <table> -->
+       <table class="table  mt-5">
+              <thead>
+                     <tr>
+                            <th scope="col">product</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Payment Status</th>
+                            <th scope="col">Order Date</th>
+                     </tr>
+              </thead>
+              <tbody>
+                     {% for item in order_items.carts.all %}
+                     <tr>
+                            <td><img src="../../../media/{{item.product_id.media_prd.all.first.image.name}}"
+                                          class=" mt-2 mb-2" width="170px" height="120px" alt="">
+                                   <h6 style="text-overflow: ellipsis; white-space: nowrap; overflow : hidden; width: 350px;"
+                                          class="mt-2"><a href="/orders_details/?order_id={{data.id}}"
+                                                 title="{{data.title}}"
+                                                 class=" text-decoration-none  text-dark font-weight-semi m-0">{{item.product_id.title}}
+                                          </a>
+                                   </h6>
+                            </td>
+                            <td>{{item.quantity}}</td>
+                            <td>₹{{item.total_price}}</td>
+                            <td>{{order_items.status}}</td>
+                            <td>{{order_items.order_date}}</td>
+                     </tr>
 
-       <div style="box-shadow: 5px 5px 5px 5px rgb(233, 224, 224);width: 100%; height: 250px;"
-              class="border border-light d-flex justify-content-between align-items-center p-3 mt-5 bg-secondary">
-              <div class="w-1">
-                     
-                     <img src="../../../media/{{item.product_id.media_prd.all.first.image.name}}" class=" mt-2 mb-2"
-                            width="150px" height="150px" alt="">
-                     <h6 style="text-overflow: ellipsis; white-space: nowrap; overflow : hidden; width: 350px;"
-                            class="mt-2"><a href="/orders_details/?order_id={{data.id}}" title="{{data.title}}"
-                                   class=" text-decoration-none  text-dark font-weight-semi m-0">{{item.product_id.title}}
-                            </a>
-                     </h6>
-              </div>
-              
-                     <h6> {{item.quantity}}</h6>
-             
-                     <h4>₹{{item.total_price}}</h4>
-              
-                     <h5>{{order_items.status}}</h5>
-                     <h5>{{order_items.order_date}}</h5>
-           
 
 
-
-       </div>
-
-       {% endfor %}
+                     {% endfor %}
+              </tbody>
+       </table>
+       <!-- </table> -->
 
 
 </div>
+
 {% endblock body %}

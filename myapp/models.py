@@ -153,22 +153,7 @@ class Order(models.Model):
 
 class ProductRating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='users')
-    product = models.ForeignKey(User, on_delete=models.CASCADE,related_name='prd_rating')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='prd_rating')
     rating = models.IntegerField()
 
-class Offer(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE )
-    coupon_code = models.CharField(max_length=15)
-    discount_value = models.IntegerField()
-    discount_price = models.IntegerField()
-    discount_title = models.CharField(max_length=50,null=True,blank=True)
-    condition = models.TextField()
-    apply_to = models.BooleanField(default=False)
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
 
-    def __str__(self):
-        return self.coupon_code
-    
-    

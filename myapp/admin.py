@@ -38,10 +38,6 @@ class CartItemAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['user','order_date']
 
-@admin.register(Offer)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ['coupon_code','discount_title','discount_price','discount_value','start_date','end_date']
-
 
 @admin.register(ProductRating)
 class RatingAdmin(admin.ModelAdmin):

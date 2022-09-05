@@ -23,8 +23,6 @@ urlpatterns = [
     path('order_place/',views.orderPlaceView.as_view(),name='order_place'),
     path('orders/',views.OrderView.as_view(),name='orders'),
     path('orders_details/',views.OrderDetailsView.as_view(),name='orders_details'),
-    path('offers/',views.OfferView.as_view(),name='offers'),
-    # path('order/',views.orderView.as_view(),name='order'),
     path('rating/',views.RatingView.as_view(),name='rating'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
