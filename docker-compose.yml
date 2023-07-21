@@ -1,0 +1,16 @@
+version: '3.10'
+services:
+  server:
+    image: web
+    container_name: ecommerece
+    build:
+      context: ./project
+      dockerfile: Dockerfile
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./project:/app/server
