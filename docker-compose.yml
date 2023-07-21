@@ -1,0 +1,17 @@
+version: '3'
+services:
+  server:
+    image: web
+    container_name: ecommerece
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+    volumes:
+      - ecommerece:/app/server
+
+volumes:
+  ecommerece:
